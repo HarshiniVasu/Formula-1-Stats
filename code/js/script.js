@@ -4,14 +4,11 @@ console.log("hello");
 //   console.log(data);
 // });
 
-let worldMap = new Map();
 
-d3.json('/data/world.json', function(error, world) {
+d3.json('data/world.json').then(world => {
 
-        // ******* TODO: PART I *******
-
-        // You need to pass the world topo data to the drawMap() function as a parameter
+        let worldMap = new Map();
         console.log("json");
         worldMap.drawMap(world);
 
-    });
+});
