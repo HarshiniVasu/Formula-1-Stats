@@ -42,7 +42,7 @@ class Map {
             .attr("d", path);
 
         async function circuits() {
-            let data = await d3.csv("dataMultipleCSV/circuits.csv");
+            let data = await d3.csv("rawData/circuits.csv");
             console.log(data);
 
             let circles = svg.selectAll("circle")
