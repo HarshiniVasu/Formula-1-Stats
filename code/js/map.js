@@ -4,8 +4,8 @@ class Map {
     /** Creates a Map Object */
     constructor() {
 
-        this.projection = d3.geoWinkel3().scale(125).translate([420, 190]);
-        //this.projection = d3.geoEquirectangular().scale(125).translate([420, 190]);
+        //this.projection = d3.geoWinkel3().scale(125).translate([420, 190]);
+        this.projection = d3.geoEquirectangular().scale(125).translate([420, 190]);
 
     }
 
@@ -28,12 +28,12 @@ class Map {
             .classed('countries', true)
             .attr('id', d =>  d.id);
 
-        svg.append("path")
+        /*svg.append("path")
             .datum({type: "Sphere"})
             .attr("id", "sphere")
             .attr("d", path)
             .attr('fill', 'none')
-            .attr('stroke', 'black');
+            .attr('stroke', 'black');*/
 
         let graticule = d3.geoGraticule();
         svg.append("path")
@@ -45,7 +45,7 @@ class Map {
             let data = await d3.csv("dataMultipleCSV/circuits.csv");
             console.log(data);
 
-            svg.selectAll("circle")
+            let circles = svg.selectAll("circle")
                 .data(data)
                 .enter()
                 .append("circle")
@@ -58,6 +58,16 @@ class Map {
                 .attr("r", 5)
                 .style("fill", "steelblue")
                 .style("opacity", 0.8);
+
+            circles.on("mouseover", function(d) {
+                circles.append("title").text(function(d) {
+                    let result = "Circuit Name: "+d.name+"\nLocation: "+d.location+"\nCountry: "+d.country;
+                    return result; });
+            });
+
+            circles.on("mouseout", function(d) {
+                circles.select("title").remove();
+            });
 
         };
 
