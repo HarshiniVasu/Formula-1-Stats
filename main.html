@@ -13,15 +13,45 @@
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script src="code/js/script.js" async></script>
     <script src="code/js/map.js" async></script>
+    <script src="code/js/teams.js" async></script>
 
 </head>
 <body>
-<div class="wrapper">
+
+<div class="tab">
     <h2> Formula 1 Stats </h2>
+    <button class="tablinks" id=defaultOpen onclick="openTab(event, 'Teams')">Teams</button>
+    <button class="tablinks" onclick="openTab(event, 'Drivers')">Drivers</button>
+    <button class="tablinks" onclick="openTab(event, 'Circuits')">Circuits</button>
+    <button class="tablinks" onclick="openTab(event, 'Demo')">Demo</button>
+</div>
+
+<div id="Teams" class="tabcontent">
+    <div class="wrapper">
+        <div id="year-slider" class="view"></div>
+        <div id="bar-chart"></div>
+        <div id="info-box"></div>
+    </div>
+</div>
+
+<div id="Drivers" class="tabcontent">
     <div class="innerWrapper">
-        <div id="map-chart" class="view"></div>
+        <div id="temp3" class="view"></div>
+        <div id="temp4"></div>
+    </div>
+</div>
+
+<div id="Circuits" class="tabcontent">
+    <div class="innerWrapper">
+        <div id="map-chart" class="fullView"></div>
         <div id="country-detail"></div>
     </div>
+</div>
+
+<div id="Demo" class="tabcontent">
+    <iframe id="demo-video" width="800" height="500"
+            src="">
+    </iframe>
 </div>
 </body>
 </html>
