@@ -11,6 +11,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+    <!-- Range slider code -->
+    <script src="code/js/d3RangeSlider.js"></script>
+    <!-- Range slider style -->
+    <link rel="stylesheet" href="code/css/d3RangeSlider.css" />
+
     <script src="code/js/script.js" async></script>
     <script src="code/js/map.js" async></script>
     <script src="code/js/teams.js" async></script>
@@ -28,7 +34,9 @@
 
 <div id="Teams" class="tabcontent">
     <div class="wrapper">
-        <div id="year-slider" class="view"></div>
+        <h2>Click and drag the bar to select a range</h2>
+        <div id="slider-container"></div>
+        <div id="range-label">1970 - 1980</div>
         <div id="bar-chart"></div>
         <div id="info-box"></div>
     </div>

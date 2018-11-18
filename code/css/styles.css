@@ -2,6 +2,32 @@
     font-family: 'Roboto', sans-serif;
 }
 
+h1, h2 {
+    text-align: center;
+    margin:0.8em;
+}
+h1 {
+    letter-spacing: 6px;
+    margin-bottom:1.5em;
+    font-weight: 900;
+}
+h2 {
+    margin-bottom:1em;
+}
+
+#slider-container {
+    position: relative;
+    height:30px;
+    background-color: #eeeef5;
+    margin-left: 1%;
+    margin-top: 0.5em;
+}
+
+#range-label {
+    text-align: center;
+    margin-top: 0.5em;
+}
+
 /* Style the tab */
 .tab {
     overflow: hidden;
