@@ -15,11 +15,13 @@ class Teams {
             }
 
             for(var i=startYear; i<=endYear;i++){
-                //console.log("year"+i);
+                console.log("year"+i);
                 d3.csv('data/yearData/'+i+'.csv').then(year_data => {
+                 //d3.csv('data/yearData/'+i+'.csv', function(year_data, error) {
                     // var rebels = pilots.filter(function (pilot) {
                     // return pilot.faction === "Rebels";
                     // });
+                    //console.log("Hello read years");
                     var constructor_key = d3.nest()
                                             .key(function(d){ return d['name_x']; })
                                             //.rollup(function(leaves){ return leaves.length; })
@@ -30,16 +32,17 @@ class Teams {
                     for(var k=0;k<constructor_key.length;k++){
                         //console.log(constructor_key[k].key);
                         if (constructor_name.hasOwnProperty(constructor_key[k].key)){
-                            // console.log(constructor_key[k].values.length);
+                            //console.log(constructor_key[k].values.length);
                             constructor_name[constructor_key[k].key]['races']+= constructor_key[k].values.length;
                         }
                     }
                     //wins aggregation
-                    year_data.forEach(function(d) {
-                        //console.log("inside foreach");
-                        if (d['position']==1){
+                    Object.keys(year_data).forEach(function(d) {
+                        //console.log(year_data[d]['position']);
+
+                        if (year_data[d]['position']=="1.0"){
                             //if (constructor_name.hasOwnProperty(d['name_x'])) {
-                            constructor_name[d['name_x']]['wins'] = constructor_name[d['name_x']]['wins']+1;
+                            constructor_name[year_data[d]['name_x']]['wins'] = constructor_name[year_data[d]['name_x']]['wins']+1;
                            // }                         
                         }
                     });
@@ -47,14 +50,16 @@ class Teams {
                 }); 
             }
             console.log(constructor_name);
-            this.drawBarChart(constructor_name);
+            return constructor_name;
     }
 
     drawBarChart(data){
-
-        // var new_data = Object.keys(data).map(function(d){ return {"Team":d };//,"races":d.key.races, "wins":d.key.wins};
-        // });
-        //console.log(new_data);
+         // var new_data = Object.entries(data).map(function(d){ return {"Team":d[0], "races":d[1]}; //"races":d.values};//,"races":d.key.races, "wins":d.key.wins};
+         // });
+         Object.entries(data).forEach(function(d){
+            //console.log(d[1][0]);
+         })
+         //console.log(new_data);
         var labelArea = 160;
         var chart,
             width = 400,
@@ -92,12 +97,17 @@ class Teams {
         var yPosByIndex = function (d) {
             return y(d);
         };
+        console.log("data:");
+        console.log(data);
         barChart.selectAll("rect.left")
-                .data(Object.keys(data))
+                .data(data)
                 .enter().append("rect")
                 .attr("x", function (d) {
-                    //console.log(d.key);
-                    return width - xFrom(d[lCol]);
+                    console.log("x:");
+                    console.log(d[lCol]);
+                    console.log(d);
+                    return null;
+                    //return width - xFrom(d[lCol]);
                 })
         //         .attr("y", yPosByIndex)
         //         .attr("class", "left")
@@ -172,11 +182,8 @@ class Teams {
         let slider = createD3RangeSlider(1970, 2018, "#slider-container");
         slider.onChange(function(newRange){
             d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
-            //this.drawBarChart(data, newRange.begin, newRange.end);
-            // console.log("click");
-            // console.log(newRange.begin);
-            // console.log(newRange.end);
-            that.readBarData(data, newRange.begin, newRange.end);
+            var constructor_name= that.readBarData(data, newRange.begin, newRange.end);
+          //  that.drawBarChart(constructor_name);
         });
 
         slider.range(1970,1980);
