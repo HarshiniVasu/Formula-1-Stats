@@ -17,9 +17,12 @@
     <!-- Range slider style -->
     <link rel="stylesheet" href="code/css/d3RangeSlider.css" />
 
-    <script src="code/js/script.js" async></script>
     <script src="code/js/map.js" async></script>
-    <script src="code/js/Teams.js" async></script>
+    <script src="code/js/teams.js" async></script>
+    <script src="code/js/drivers.js" async></script>
+    <script src="code/js/driverChart.js" async></script>
+    <script src="code/js/script.js" async></script>
+
 
 </head>
 <body>
@@ -43,10 +46,40 @@
 </div>
 
 <div id="Drivers" class="tabcontent">
-    <div class="innerWrapper">
-        <div id="temp3" class="view"></div>
-        <div id="temp4"></div>
+    <div id="driver_attributes" class="view">
+
+        <div id="dropdown">
+        <span>Year From</span>
+        <select id="YearFrom"></select>
+        <span>Year To</span>
+        <select id="YearTo"></select>
+        </div>
+
+        <div id="driver-select">
+            <button id="driver-select-btn" class="button"> Select another driver </button>
+        </div>
+
+        <span id="driver-names"></span>
+
+        <div id="driver-details">
+            <svg width="300" height="300" id="image"></svg>
+            <svg width="350" height="300" id="details"></svg>
+        </div>
     </div>
+
+    <div id="performance_years" class="view">
+        <select id="select2-search" name="state">
+            <option></option>
+        </select>
+        <select id="attribute-search"></select>
+        <svg  id="lineChart">
+            <g id="xAxis"></g>
+            <g id="yAxis"></g>
+        </svg>
+        <div  id="selected-drivers">
+        </div>
+    </div>
+    <div id="performance_per_years" class="view"></div>
 </div>
 
 <div id="Circuits" class="tabcontent">

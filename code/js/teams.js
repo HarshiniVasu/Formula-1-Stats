@@ -4,7 +4,7 @@ class Teams {
     }
 
     readBarData(data, startYear, endYear){
-        console.log("hello data");
+        //console.log("hello data");
             var unique_teams = d3.set(data, function(d){ return d.name_x; });
             var unique_names = Object.values(unique_teams);
             var start_year=1970;
@@ -15,7 +15,7 @@ class Teams {
             }
 
             for(var i=startYear; i<=endYear;i++){
-                console.log("year"+i);
+                //console.log("year"+i);
                 d3.csv('data/yearData/'+i+'.csv').then(year_data => {
                  //d3.csv('data/yearData/'+i+'.csv', function(year_data, error) {
                     // var rebels = pilots.filter(function (pilot) {
@@ -49,7 +49,7 @@ class Teams {
                     //console.log(constructor_name);
                 }); 
             }
-            console.log(constructor_name);
+            //console.log(constructor_name);
             return constructor_name;
     }
 

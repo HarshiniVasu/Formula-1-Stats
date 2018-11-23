@@ -20,11 +20,79 @@ d3.json('data/world.json').then(world => {
 
         const worldMap = new Map();
         worldMap.drawMap(world);
-        
-        //teamObj.drawYearBar();
 
 });
 
+
+/*d3.csv('data/sample.csv').then(data =>{
+    let selectedDriver = "Lewis Hamilton";
+    let selectedAttribute = "points";
+    const driverObj = new Drivers(data, selectedDriver);
+    //const driverChart = new DriverChart(data, selectedDriver, selectedAttribute);
+});*/
+
+
+/*async function loadFile(file) {
+    let data = await d3.csv(file);
+    return data;
+}*/
+
+async function loadData() {
+        let data = await d3.csv('data/sample.csv');
+        /*data.forEach(function (d) {
+            d["season"] = +d["season"];
+        });*/
+        return data;
+}
+
+loadData().then(data => {
+
+    let that = this;
+    let min = 1960, max = 2018;
+    let from = document.getElementById('YearFrom');
+    let to = document.getElementById('YearTo');
+
+    for (let i = min; i<=max; i++){
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = i;
+        from.appendChild(opt);
+    }
+
+    for (let i = max; i>=min; i--){
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = i;
+        to.appendChild(opt);
+    }
+
+    d3.select('#YearFrom').on('change', function () {
+        sample();
+    });
+
+    d3.select('#YearTo').on('change', function () {
+        sample();
+    });
+
+    let selectedDriver = "Lewis Hamilton";
+    let selectedAttribute = "points";
+    const driverObj = new Drivers(data, selectedDriver);
+    //let driverChart = new DriverChart(data, selectedDriver, selectedAttribute);
+
+    function sample ()
+    {
+        let from = document.getElementById('YearFrom').value;
+        let to = document.getElementById('YearTo').value;
+        //console.log(from, to);
+
+        let newData = data.filter(d => (from <= d.season && d.season <= to));
+
+        //console.log(newData);
+
+        driverObj.populateNames(newData);
+    }
+
+});
 
 //var array = new Array();
 //const unique_names = new Object();
