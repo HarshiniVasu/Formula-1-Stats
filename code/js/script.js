@@ -32,17 +32,25 @@ d3.json('data/world.json').then(world => {
 });*/
 
 
-/*async function loadFile(file) {
-    let data = await d3.csv(file);
-    return data;
-}*/
-
 async function loadData() {
-        let data = await d3.csv('data/sample.csv');
-        /*data.forEach(function (d) {
-            d["season"] = +d["season"];
-        });*/
-        return data;
+        let data = await d3.csv('data/final_f1_stats.csv');
+
+        let reducedData = data.map(d =>{
+            return {
+                season : +d.season,
+                driver_id : d.driverId,
+                first_name : d.givenName,
+                last_name : d.familyName,
+                dob : d.dateOfBirth,
+                nationality : d.nationality,
+                constructor_id : d.constructorId,
+                team : d.name_x,
+                points : +d.points,
+                laps : +d["results.laps"]
+            };
+        });
+        //console.log(reducedData);
+        return reducedData;
 }
 
 loadData().then(data => {
@@ -74,7 +82,7 @@ loadData().then(data => {
         sample();
     });
 
-    let selectedDriver = "Lewis Hamilton";
+    let selectedDriver = "hamilton";
     let selectedAttribute = "points";
     const driverObj = new Drivers(data, selectedDriver);
     //let driverChart = new DriverChart(data, selectedDriver, selectedAttribute);

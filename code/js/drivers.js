@@ -23,9 +23,14 @@ class Drivers {
 
     populateNames (driverData){
 
+        this.driverData = driverData;
+
         let drivers = [];
+        let dict = {};
         driverData.forEach(function(d){
-            drivers.push(d.driver_name);
+            let string = d.first_name+" "+d.last_name;
+            drivers.push(string);
+            dict[string] = d.driver_id;
         });
 
         let self = this;
@@ -37,7 +42,7 @@ class Drivers {
         li.on('click', function(d){
             self.selectedDriver = d;
             self.showNames();
-            self.update(d);
+            self.update(dict[d]);
             //self.playerChart.update([d], "overall_rating");
         })
 
@@ -60,15 +65,17 @@ class Drivers {
         let driverDetails= [];
         let singleDriverData = null;
         this.driverData.forEach(function(driver){
-            if(driver.driver_name===name){
+            if(driver.driver_id === name){
                 singleDriverData = driver;
                 imageUrl = driver.image;
-                driverDetails.push(driver.driver_name);
+                driverDetails.push(driver.first_name+" "+driver.last_name);
                 driverDetails.push("DOB : "+driver.dob);
                 driverDetails.push("Nationality : "+driver.nationality);
-                driverDetails.push("Teams : "+driver.teams);
+                driverDetails.push("Teams : "+driver.team);
             }
         });
+
+        console.log(driverDetails);
 
         let imageSvg = d3.select("#image");
         imageSvg.select(".player-image").remove();
