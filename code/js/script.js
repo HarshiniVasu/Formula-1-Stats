@@ -24,38 +24,60 @@ d3.json('data/world.json').then(world => {
 });
 
 
-/*d3.csv('data/sample.csv').then(data =>{
-    let selectedDriver = "Lewis Hamilton";
-    let selectedAttribute = "points";
-    const driverObj = new Drivers(data, selectedDriver);
-    //const driverChart = new DriverChart(data, selectedDriver, selectedAttribute);
-});*/
-
-
 async function loadData() {
-        let data = await d3.csv('data/final_f1_stats.csv');
 
-        let reducedData = data.map(d =>{
-            return {
-                season : +d.season,
-                driver_id : d.driverId,
-                first_name : d.givenName,
-                last_name : d.familyName,
-                dob : d.dateOfBirth,
-                nationality : d.nationality,
-                constructor_id : d.constructorId,
-                team : d.name_x,
-                points : +d.points,
-                laps : +d["results.laps"]
-            };
-        });
-        //console.log(reducedData);
-        return reducedData;
+    let data = await d3.csv('data/final_f1_stats.csv');
+
+    let reducedData = data.map(d =>{
+        return {
+            season : +d.season,
+            driver_name : d.givenName+" "+d.familyName,
+            dob : d.dateOfBirth,
+            nationality : d.nationality,
+            team : d.name_x,
+            points : +d.points,
+            laps : +d["results.laps"]
+        };
+    });
+
+    //console.log(reducedData);
+    return reducedData;
 }
+
+
+function updateYear (reducedData)
+{
+    let from = document.getElementById('YearFrom').value;
+    let to = document.getElementById('YearTo').value;
+    let newData = reducedData.filter(d => (from <= d.season && d.season <= to))
+        .sort(function(a,b) { return a.season - b.season; });
+
+    let nestData = d3.nest()
+        .key(function (d) { return d.driver_name; })
+        .key(function (d) { return d.season; })
+        .rollup(function (value) {
+            let myObj = new Object;
+            myObj.dob = value[0].dob;
+            myObj.nationality =  value[0].nationality;
+            myObj.team = value[0].team;
+            myObj.points = d3.sum(value, function (p) { return p.points; });
+            myObj.laps = d3.sum(value, function (l) { return l.laps; });
+            return myObj;
+        })
+        .entries(newData);
+
+    let distinctValue = [];
+    nestData.forEach(function(d){
+        distinctValue.push({"driver_name":d.key, "values":d.values});
+    });
+
+    //console.log(distinctValue);
+    return distinctValue;
+}
+
 
 loadData().then(data => {
 
-    let that = this;
     let min = 1960, max = 2018;
     let from = document.getElementById('YearFrom');
     let to = document.getElementById('YearTo');
@@ -74,33 +96,26 @@ loadData().then(data => {
         to.appendChild(opt);
     }
 
+    let retData = updateYear(data);
+    let selectedDriver = "Lewis Hamilton";
+    const driverObj = new Drivers(retData, selectedDriver);
+    //let selectedAttribute = "points";
+    //let driverChart = new DriverChart(data, selectedDriver, selectedAttribute);
+
+
     d3.select('#YearFrom').on('change', function () {
-        sample();
+        let retVal = updateYear(data);
+        driverObj.populateNames(retVal);
     });
 
     d3.select('#YearTo').on('change', function () {
-        sample();
+        let retVal = updateYear(data);
+        driverObj.populateNames(retVal);
     });
 
-    let selectedDriver = "hamilton";
-    let selectedAttribute = "points";
-    const driverObj = new Drivers(data, selectedDriver);
-    //let driverChart = new DriverChart(data, selectedDriver, selectedAttribute);
-
-    function sample ()
-    {
-        let from = document.getElementById('YearFrom').value;
-        let to = document.getElementById('YearTo').value;
-        //console.log(from, to);
-
-        let newData = data.filter(d => (from <= d.season && d.season <= to));
-
-        //console.log(newData);
-
-        driverObj.populateNames(newData);
-    }
-
 });
+
+
 
 //var array = new Array();
 //const unique_names = new Object();

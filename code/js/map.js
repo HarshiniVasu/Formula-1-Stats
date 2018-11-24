@@ -43,7 +43,7 @@ class Map {
 
         async function circuits() {
             let data = await d3.csv("rawData/circuits.csv");
-            console.log(data);
+            //console.log(data);
 
             let circles = svg.selectAll("circle")
                 .data(data)

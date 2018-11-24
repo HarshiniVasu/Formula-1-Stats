@@ -2,7 +2,7 @@ class Drivers {
 
     constructor (driverData, selectedDriver) {
 
-        console.log(driverData);
+        //console.log(driverData);
 
         // Initializes the svg elements required for this chart
         this.margin = {top: 10, right: 20, bottom: 30, left: 50};
@@ -10,7 +10,6 @@ class Drivers {
 
         this.driverData = driverData;
         this.selectedDriver = selectedDriver;
-
         this.populateNames(driverData);
         this.update(this.selectedDriver);
 
@@ -26,11 +25,8 @@ class Drivers {
         this.driverData = driverData;
 
         let drivers = [];
-        let dict = {};
         driverData.forEach(function(d){
-            let string = d.first_name+" "+d.last_name;
-            drivers.push(string);
-            dict[string] = d.driver_id;
+            drivers.push(d.driver_name);
         });
 
         let self = this;
@@ -42,7 +38,7 @@ class Drivers {
         li.on('click', function(d){
             self.selectedDriver = d;
             self.showNames();
-            self.update(dict[d]);
+            self.update(d);
             //self.playerChart.update([d], "overall_rating");
         })
 
@@ -65,17 +61,27 @@ class Drivers {
         let driverDetails= [];
         let singleDriverData = null;
         this.driverData.forEach(function(driver){
-            if(driver.driver_id === name){
+            if(driver.driver_name === name){
                 singleDriverData = driver;
                 imageUrl = driver.image;
-                driverDetails.push(driver.first_name+" "+driver.last_name);
-                driverDetails.push("DOB : "+driver.dob);
-                driverDetails.push("Nationality : "+driver.nationality);
-                driverDetails.push("Teams : "+driver.team);
+                driverDetails.push(driver.driver_name);
+                driverDetails.push("DOB : "+driver.values[0].value.dob);
+                driverDetails.push("Nationality : "+driver.values[0].value.nationality);
+                driverDetails.push("Teams : "+driver.values[0].value.team);
             }
         });
 
-        console.log(driverDetails);
+        console.log(singleDriverData);
+
+        let length = singleDriverData.values.length;
+
+        let teams = [];
+        for (let i = 0; i < length; i++) {
+            teams.push(singleDriverData.values[i].value.team);
+        }
+
+        console.log(teams);
+
 
         let imageSvg = d3.select("#image");
         imageSvg.select(".player-image").remove();
