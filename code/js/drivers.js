@@ -63,25 +63,41 @@ class Drivers {
         this.driverData.forEach(function(driver){
             if(driver.driver_name === name){
                 singleDriverData = driver;
-                imageUrl = driver.image;
+                //imageUrl = driver.image;
+                imageUrl = "https://www.formula1.com/content/fom-website/en/drivers/lewis-hamilton/_jcr_content/image.img.1920.medium.jpg/1533294345447.jpg";
                 driverDetails.push(driver.driver_name);
                 driverDetails.push("DOB : "+driver.values[0].value.dob);
                 driverDetails.push("Nationality : "+driver.values[0].value.nationality);
-                driverDetails.push("Teams : "+driver.values[0].value.team);
             }
         });
+        
+        let teamSet = d3.set(singleDriverData.values, function (d) {
+            return d.value.team;
+        });
 
-        console.log(singleDriverData);
+        let teamNames = Object.values(teamSet);
+        //console.log(teamNames);
 
-        let length = singleDriverData.values.length;
-
-        let teams = [];
-        for (let i = 0; i < length; i++) {
-            teams.push(singleDriverData.values[i].value.team);
+        let teamString = "";
+        for (let i=0; i < teamNames.length; i++) {
+            if (i == teamNames.length - 1)
+                teamString += teamNames[i];
+            else
+                teamString += teamNames[i]+", ";
         }
 
-        console.log(teams);
+        //console.log(teamString);
+        let start = singleDriverData.values[0].key;
+        let end = singleDriverData.values[singleDriverData.values.length - 1].key;
+        let seasons = "";
+        if (start === end)
+            seasons = start;
+        else
+            seasons = start+" - "+end;
 
+        // Adding season and teams
+        driverDetails.push("Seasons : "+seasons);
+        driverDetails.push("Teams : "+teamString);
 
         let imageSvg = d3.select("#image");
         imageSvg.select(".player-image").remove();

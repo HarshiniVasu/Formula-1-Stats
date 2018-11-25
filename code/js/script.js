@@ -97,8 +97,8 @@ loadData().then(data => {
     let retData = updateYear(data);
     let selectedDriver = "Lewis Hamilton";
     const driverObj = new Drivers(retData, selectedDriver);
-    //let selectedAttribute = "points";
-    //let driverChart = new DriverChart(data, selectedDriver, selectedAttribute);
+    let selectedAttribute = "points";
+    let driverChart = new DriverChart(retData, selectedDriver, selectedAttribute);
 
 
     d3.select('#YearFrom').on('change', function () {
