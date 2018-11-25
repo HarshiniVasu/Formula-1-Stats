@@ -82,9 +82,32 @@ class Map {
         };
 
         async function topCircuit() {
-            let data = await d3.csv("data/final_f1_stats.csv");
+            let data = await d3.csv("data/consolidated_f1_stats.csv");
             let cirData = await d3.csv("rawData/circuits.csv");
             var countObj = {};
+
+            var constructorNestedData = d3.nest()
+                                          .key(function(d){ return d['circuitName']; })
+                                          .key(function(d){ return d['name_x']; })
+                                          .rollup(function(d){  
+                                          let tempObj = new Object();
+                                          tempObj = d3.max(d, function(dd){ return parseInt(dd['wins']); });
+                                          return tempObj; 
+                                          }) 
+                                          .entries(data);
+            //console.log(Object.keys(constructorNestedData).length);
+            let aggregateData = {};
+            Object.keys(constructorNestedData).forEach(function(d){
+                let key = constructorNestedData[d].key;
+                let dd = constructorNestedData[d].values;
+                //console.log(key);
+                let tempVal=[];
+                tempVal = d3.max(dd, function(e){ return [parseInt(e.value),e.key]; });
+                //console.log(tempVal); 
+                aggregateData[key] =  tempVal;                      
+
+            });
+            console.log(aggregateData);
 
             data.forEach(function(d){
                 var circuitName = d.circuitName;
@@ -97,23 +120,32 @@ class Map {
                 }
 
             });
+            console.log(Object.keys(countObj).length);
 
             var reducedData = cirData.map(function(d,i){
+                //console.log(aggregateData[d.name]);
+                 console.log(d.name)
                 return {
 
                     CircuitName: d.name,
                     NumRaces: countObj[d.name],
                     Location: d.location,
                     CountryName: d.country,
+                    WinningTeam: aggregateData[d.name][1],
+                    NumWins: aggregateData[d.name][0],
                     lat : d.lat,
                     lng : d.lng
                 };
             });
+            //console.log(reducedData);
+
 
     
             topData = reducedData.sort(function(a,b){
                 return d3.descending(a.races,b.races);
             }).slice(0,15);
+
+            console.log(topData);
 
 
            svg.selectAll("circle").remove();
@@ -136,16 +168,13 @@ class Map {
             circles.on("mouseover", function(d) {
                 circles .append("title")
                         .text(function(d) {
-                            let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName;
+                            let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName+"\nWinning Team: "+d.WinningTeam+"\nNumber of Wins: "+d.NumWins;
                             return result; 
 
                         });
 
             });
 
-            console.log(topData);
-            console.log(typeof(topData));
-            //d3.select(this).classed("highlighted",true)
 
             circles.on("mouseout", function(d) {
                 circles.select("title").remove();
@@ -183,10 +212,16 @@ class Map {
 
            
         };
+       // async function teams() {
+              
+            //console.log(Object.keys(aggregateData).length);
+
+        //};
 
         
 
         circuits();
+        //teams();
 
     };
 
