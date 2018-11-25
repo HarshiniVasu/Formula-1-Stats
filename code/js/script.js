@@ -39,8 +39,6 @@ async function loadData() {
             laps : +d["results.laps"]
         };
     });
-
-    //console.log(reducedData);
     return reducedData;
 }
 

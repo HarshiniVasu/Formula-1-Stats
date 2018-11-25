@@ -2,13 +2,14 @@
     font-family: 'Roboto', sans-serif;
 }
 
+
 #dropdown {
     text-align: center;
     font-size: 20px;
 }
 
 .button {
-    border-radius: 20px;
+   border-radius: 20px;
     cursor: pointer;
     display: inline-block;
     text-align: center;
@@ -18,11 +19,30 @@
     margin-top: 20px;
     margin-bottom: 10px;
     font-size: 17px;
-    background-color: #0b0b7e9c;
+    background-color: black;
     color: white;
     font-weight: bolder;
     margin-left: 0.5em;
+    /*float: left;*/
 }
+.map-select button {
+   border-radius: 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    height: 60px;
+    width: 25%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 17px;
+    background-color: black;
+    color: white;
+    font-weight: bolder;
+    margin-left: 0.5em;
+    /*float: left;*/
+}
+
 
 #driver-details{
     /*background-color: #10da8f1a;*/
@@ -33,6 +53,7 @@
     width: 100%;
     margin-top: -1%;
 }
+
 
 #driver-names{
     width: 100%;
@@ -109,9 +130,10 @@ h2 {
 
 /* Style the tab */
 .tab {
+    margin-top : 43px;
     overflow: hidden;
     border: 1px solid #ccc;
-    background-color: #4379A7;
+    background-color: #FC0303;
     width: 100%;
     display: inline-block;
     /* border-bottom:2px solid dimgrey; */
@@ -124,14 +146,16 @@ h2 {
     border: none;
     outline: none;
     cursor: pointer;
-    /*padding: 14px 16px;*/
+    /*padding-left: 80px;*/
+    display:inline-block;
     transition: 0.3s;
     font-size: 17px;
-    width: 15%;
+    width: 21%;
     color: white;
     height: 2em;
-    margin-left: 1%;
+    margin-left: 2%;
     margin-top: 0.5em;
+    text-align: center;
 }
 
 /* Change background color of buttons on hover */
@@ -231,7 +255,12 @@ path.hidden {
 }
 
 #map-chart svg {
-    margin: auto;
+   margin: auto;
+}
+
+.map-select{
+    width: 100%;
+    margin-top: -1%;
 }
 
 
