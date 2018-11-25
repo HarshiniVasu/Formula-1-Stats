@@ -3,11 +3,11 @@ class DriverChart {
     constructor (driverData, selectedDriver, selectedAttribute) {
 
         // Initializes the svg elements required for this chart
-        this.margin = {top: 10, right: 30, bottom: 30, left: 50};
-        let divChart = d3.select("#performance_years").classed("fullView", true);
+        this.margin = {top: 30, right: 20, bottom: 20, left: 50};
+        let divyearChart = d3.select("#temp-select");
 
         //fetch the svg bounds
-        this.svgBounds = divChart.node().getBoundingClientRect();
+        this.svgBounds = divyearChart.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right - 350;
         this.svgHeight = 400;
 
@@ -15,7 +15,7 @@ class DriverChart {
         this.svg = d3.select("#lineChart")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight)
-            .attr("transform", "translate("+-400+","+50+")");
+            .attr("transform", "translate(" + this.margin.left + ",0)");
 
         let that = this;
         this.driverData = driverData;
@@ -51,9 +51,7 @@ class DriverChart {
                 that.selectedDrivers.push(selectedName);
                 that.update(that.selectedDrivers, that.selectedAttribute);
             }
-            //console.log(that.selectedDrivers);
         });
-
 
         let attributes = ["points", "laps"];
         let optionSelect = document.getElementById('attribute-search');
@@ -84,8 +82,6 @@ class DriverChart {
                 return d.driver_name == name;
             });
 
-            //console.log(plyrData[0].values);
-
             playerYearDataList.push(
                 {
                     "name" : name,
@@ -94,7 +90,6 @@ class DriverChart {
 
             attribValues = attribValues.concat(plyrData[0].values.map(function(d){
                 let temp = d.value;
-                //console.log(temp[attrib])
                 return +temp[attrib];
             }));
 
@@ -107,7 +102,6 @@ class DriverChart {
         //console.log(playerYearDataList);
         //console.log(attribValues);
         //console.log(yearValues);
-
         //console.log(d3.min(attribValues));
         //console.log(d3.max(attribValues));
         //console.log(d3.min(yearValues));
@@ -118,64 +112,48 @@ class DriverChart {
             .range([that.svgHeight - that.margin.top - that.margin.bottom, 0]);
 
         let yAxis = d3.axisLeft();
-        // assign the scale to the axis
         yAxis.scale(yScale);
 
-
-        var yAxisG = d3.select("#yAxis")
+        let yAxisG = d3.select("#yAxis")
             .attr("transform", "translate("+that.margin.left+"," + that.margin.top +")");
 
-        //console.log(yAxisG);
-
         yAxisG.transition(3000).call(yAxis);
-
 
         let xScale = d3.scaleLinear()
             .domain([d3.min(yearValues), d3.max(yearValues)])
             .range([0, that.svgWidth - that.margin.left - that.margin.right]);
 
         let xAxis = d3.axisBottom();
-        // assign the scale to the axis
         xAxis.scale(xScale);
 
-
-        var xAxisG = d3.select("#xAxis")
+        let xAxisG = d3.select("#xAxis")
             .attr("transform", "translate("+(that.margin.left+ 10)+"," + (that.svgHeight - that.margin.bottom) +")");
 
-
-        //console.log(xAxisG);
         let color = d3.scaleLinear()
             .domain([0, playerYearDataList.length])
-            // .range(["#016450", "#ece2f0"]);
             .range(["#2019F6", "#F61936"]);
 
         xAxisG.transition(3000).call(xAxis);
         that.svg.selectAll(".playerPath").remove();
         that.svg.selectAll(".playerNode").remove();
         let playerIndex = 0;
+
         playerYearDataList.forEach(function(player){
-            console.log(player.name);
-            console.log(player.playerYearData);
 
             let lineCoords = player.playerYearData.map(function(d){
                 let temp = d.value;
-                //console.log(temp[attrib]);
                 return [xScale(+d.key) , yScale(+temp[attrib])];
             });
-
-            console.log(lineCoords);
 
             let lineGenerator = d3.line();
             let pathString = lineGenerator(lineCoords);
 
-            console.log(pathString);
-
+            //work
             let tip = d3.tip()
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
                 .html(function(d) {
-                    let style = 'color:red; left:'+d3.event.pageX+'px; top:'+d3.event.pageY+'px;';
-                    return "<span style='"+style+"'>" + player.name + "</span>";
+                    return "<span style='color:red'>" + player.name + "</span>";
                 });
 
             that.svg.call(tip);
@@ -202,9 +180,9 @@ class DriverChart {
                     return color(playerIndex);
                 })
                 .style("stroke-width", 3)
-                .style('opacity', 0.5)
-                .on("mouseover", tip.show)
-                .on("mouseout", tip.hide);
+                .style('opacity', 0.5);
+                //.on("mouseover", tip.show)
+                //.on("mouseout", tip.hide);
             playerIndex++;
         });
 

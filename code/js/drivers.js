@@ -1,12 +1,12 @@
 class Drivers {
 
-    constructor (driverData, selectedDriver) {
+    constructor (driverData, driverChart, selectedDriver, selectedAttribute) {
 
         //console.log(driverData);
 
         // Initializes the svg elements required for this chart
-        this.margin = {top: 10, right: 20, bottom: 30, left: 50};
-        let divPlayer = d3.select("#driver_attributes").classed("fullView", true);
+        //this.margin = {top: 10, right: 20, bottom: 30, left: 50};
+        //let divPlayer = d3.select("#driver_attributes").classed("fullView", true);
 
         this.driverData = driverData;
         this.selectedDriver = selectedDriver;
@@ -15,8 +15,8 @@ class Drivers {
 
         d3.select("#driver-select-btn").on("click", this.showNames);
 
-        //this.playerChart = playerChart;
-        //this.playerChart.update([this.selectedPlayer], selectedAttribute);
+        this.driverChart = driverChart;
+        this.driverChart.update([this.selectedDriver], selectedAttribute);
         //this.playerChart.populateSearch(players);*/
     };
 
@@ -29,17 +29,17 @@ class Drivers {
             drivers.push(d.driver_name);
         });
 
-        let self = this;
+        let that = this;
         let li = d3.select("#driver-names").selectAll('li').data(drivers);
         let newLi = li.enter().append('li');
         li.exit().remove();
         li = newLi.merge(li);
 
         li.on('click', function(d){
-            self.selectedDriver = d;
-            self.showNames();
-            self.update(d);
-            //self.playerChart.update([d], "overall_rating");
+            that.selectedDriver = d;
+            that.showNames();
+            that.update(d);
+            that.driverChart.update([d], "points");
         })
 
         li.transition()

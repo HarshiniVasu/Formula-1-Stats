@@ -70,14 +70,15 @@
     </div>
 </div>
 
-<div id="Drivers" class="tabcontent">
-    <div id="driver_attributes" class="view">
+    <div id="temp-select"></div>
 
+<div id="Drivers" class="tabcontent">
+    <div id="driver_attributes">
         <div id="dropdown">
-        <span>Year From</span>
-        <select id="YearFrom"></select>
-        <span>Year To</span>
-        <select id="YearTo"></select>
+            <span>Year From</span>
+            <select id="YearFrom"></select>
+            <span>Year To</span>
+            <select id="YearTo"></select>
         </div>
 
         <div id="driver-select">
@@ -92,18 +93,21 @@
         </div>
     </div>
 
-    <div id="performance_years" class="view">
-        <span>Select driver for comparison</span>
-        <select id="select2-search"></select>
-        <span>Select attribute</span>
-        <select id="attribute-search"></select>
-        <svg  id="lineChart">
-            <g id="xAxis"></g>
-            <g id="yAxis"></g>
-        </svg>
+    <div id="performance_years">
+        <div class="wrapper">
+            <div id="playerdropdown">
+                <span>Select drivers for comparison</span>
+                <select id="select2-search"></select>
+                <span>Select attribute</span>
+                <select id="attribute-search"></select>
+            </div>
+            <svg  id="lineChart">
+                <g id="xAxis"></g>
+                <g id="yAxis"></g>
+            </svg>
+        </div>
         <div  id="selected-drivers"></div>
     </div>
-    <div id="performance_per_years" class="view"></div>
 </div>
 
 <div id="Circuits" class="tabcontent">
