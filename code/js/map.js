@@ -53,6 +53,7 @@ class Map {
             //console.log(data);
 
             svg.selectAll("circle").remove();
+            d3.select("#unique").remove();
 
             let circles = svg.selectAll("circle")
                 .data(data)
@@ -100,10 +101,10 @@ class Map {
             var reducedData = cirData.map(function(d,i){
                 return {
 
-                    cirName: d.name,
-                    races: countObj[d.name],
-                    loc: d.location,
-                    countryName: d.country,
+                    CircuitName: d.name,
+                    NumRaces: countObj[d.name],
+                    Location: d.location,
+                    CountryName: d.country,
                     lat : d.lat,
                     lng : d.lng
                 };
@@ -112,12 +113,11 @@ class Map {
     
             topData = reducedData.sort(function(a,b){
                 return d3.descending(a.races,b.races);
-            }).slice(0,20);
+            }).slice(0,15);
 
 
            svg.selectAll("circle").remove();
-
-
+           d3.select("#unique").remove();
 
             let circles = svg.selectAll("circle")
                 .data(topData)
@@ -136,13 +136,15 @@ class Map {
             circles.on("mouseover", function(d) {
                 circles .append("title")
                         .text(function(d) {
-                            let result = "Circuit Name: "+d.cirName+"\nLocation: "+d.loc+"\nCountry: "+d.countryName;
+                            let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName;
                             return result; 
 
                         });
 
             });
 
+            console.log(topData);
+            console.log(typeof(topData));
             //d3.select(this).classed("highlighted",true)
 
             circles.on("mouseout", function(d) {
@@ -150,8 +152,35 @@ class Map {
             });
 
 
-            var table = d3.select("#table").append("table");
-            
+
+            var table = d3.select("#table").append("table").attr('id','unique');
+            var header = table.append("thead").append("tr");
+            var tbody = table.append('tbody');
+            header
+                .selectAll("th")
+                .data(["Circuit Name", "Location", "Country Name", "Number of Races"])
+                .enter()
+                .append("th")
+                .text(function(d) { return d; });
+
+
+           var rows = tbody.selectAll('tr')
+                        .data(topData)
+                        .enter()
+                        .append('tr')
+                        .sort(function(a,b){ return d3.ascending(b.NumRaces,a.NumRaces); });
+
+
+            var cells = rows.selectAll('td')
+                           .data(function (row) {
+                            return ["CircuitName", "Location", "CountryName", "NumRaces"].map(function (column) {
+                                    return {column: column, value: row[column]};
+                            });
+                        })
+                            .enter()
+                            .append('td')
+                            .text(function (d) { return d.value; });
+
            
         };
 

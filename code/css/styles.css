@@ -2,6 +2,30 @@
     font-family: 'Roboto', sans-serif;
 }
 
+#table { 
+        width: 100%; 
+        padding: 120px;
+        border-collapse: collapse;
+        margin-top: -20%;
+    }
+    /* Zebra striping */
+    tr:nth-of-type(odd) { 
+        background: #eee; 
+    }
+    th { 
+        background: #333; 
+        color: white; 
+        font-weight: bold; 
+        cursor: s-resize;
+        background-repeat: no-repeat;
+        background-position: 3% center;
+    }
+    td, th { 
+        padding: 6px; 
+        border: 1px solid #ccc; 
+        text-align: left; 
+    }
+
 .d3-tip {
     line-height: 1;
     font-weight: bold;
@@ -71,6 +95,10 @@
     /*float: left;*/
 }
 
+.map-select button:hover {
+    background-color: #ddd;
+    color: #000;
+}
 
 #driver-details{
     /*background-color: #10da8f1a;*/
