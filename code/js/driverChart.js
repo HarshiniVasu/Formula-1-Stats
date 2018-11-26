@@ -23,13 +23,26 @@ class DriverChart {
         this.selectedDrivers = [selectedDriver];
 
         //Default call
+        that.playerDropdown(that.driverData, that.selectedAttribute);
         that.update(that.selectedDrivers, that.selectedAttribute);
+
+    };
+
+    playerDropdown(driverData, selectedAttribute) {
+
+        let that = this;
+
+        this.driverData = driverData;
+        this.selectedAttribute = selectedAttribute;
 
         let playerSelect = document.getElementById('select2-search');
         let drivers = [];
         driverData.forEach(function(d){
             drivers.push(d.driver_name);
         });
+
+        // Clear before adding other options
+        playerSelect.options.length = 0;
 
         for(let i = 0; i < drivers.length; i++) {
             let opt = document.createElement('option');
@@ -55,8 +68,10 @@ class DriverChart {
 
         let attributes = ["points", "laps"];
         let optionSelect = document.getElementById('attribute-search');
+        // Clear before adding other options
+        optionSelect.options.length = 0;
         for(let i = 0; i < attributes.length; i++) {
-            var opt = document.createElement('option');
+            let opt = document.createElement('option');
             opt.innerHTML = attributes[i];
             opt.value = attributes[i];
             optionSelect.appendChild(opt);
@@ -65,8 +80,7 @@ class DriverChart {
         d3.select('#attribute-search').on('change', function () {
             that.changeAttribute();
         });
-
-    };
+    }
 
     update(nameList, attrib) {
 
@@ -86,7 +100,7 @@ class DriverChart {
                 {
                     "name" : name,
                     "playerYearData" : plyrData[0].values
-                })
+                });
 
             attribValues = attribValues.concat(plyrData[0].values.map(function(d){
                 let temp = d.value;
@@ -98,14 +112,6 @@ class DriverChart {
             }));
 
         });
-
-        //console.log(playerYearDataList);
-        //console.log(attribValues);
-        //console.log(yearValues);
-        //console.log(d3.min(attribValues));
-        //console.log(d3.max(attribValues));
-        //console.log(d3.min(yearValues));
-        //console.log(d3.max(yearValues));
 
         let yScale = d3.scaleLinear()
             .domain([d3.min(attribValues, d => d), d3.max(attribValues, d => d)])
@@ -168,7 +174,7 @@ class DriverChart {
                     .attr("id", player.name+"-node")
                     .on("mouseover", tip.show)
                     .on("mouseout", tip.hide);
-            })
+            });
 
             that.svg.append('path')
                 .attr('d', pathString)
@@ -193,7 +199,7 @@ class DriverChart {
     listPlayers(nameList, colorScale) {
         let that = this;
         let listSvg = d3.select("#selected-drivers");
-        listSvg.selectAll('#listTitle').remove();
+        listSvg.selectAll('*').remove();
 
         let li = listSvg.selectAll('.selected-names').data(nameList);
         let newLi = li.enter().append('li').attr('class','selected-names');
@@ -239,4 +245,4 @@ class DriverChart {
             this.update(this.selectedDrivers, this.selectedAttribute);
         }
     }
-};
+}

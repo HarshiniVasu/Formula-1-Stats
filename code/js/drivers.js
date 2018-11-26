@@ -2,12 +2,6 @@ class Drivers {
 
     constructor (driverData, driverChart, selectedDriver, selectedAttribute) {
 
-        //console.log(driverData);
-
-        // Initializes the svg elements required for this chart
-        //this.margin = {top: 10, right: 20, bottom: 30, left: 50};
-        //let divPlayer = d3.select("#driver_attributes").classed("fullView", true);
-
         this.driverData = driverData;
         this.selectedDriver = selectedDriver;
         this.populateNames(driverData);
@@ -17,7 +11,6 @@ class Drivers {
 
         this.driverChart = driverChart;
         this.driverChart.update([this.selectedDriver], selectedAttribute);
-        //this.playerChart.populateSearch(players);*/
     };
 
     populateNames (driverData){
@@ -76,7 +69,6 @@ class Drivers {
         });
 
         let teamNames = Object.values(teamSet);
-        //console.log(teamNames);
 
         let teamString = "";
         for (let i=0; i < teamNames.length; i++) {
@@ -86,7 +78,6 @@ class Drivers {
                 teamString += teamNames[i]+", ";
         }
 
-        //console.log(teamString);
         let start = singleDriverData.values[0].key;
         let end = singleDriverData.values[singleDriverData.values.length - 1].key;
         let seasons = "";

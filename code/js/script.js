@@ -94,21 +94,25 @@ loadData().then(data => {
     }
 
     let retData = updateYear(data);
-    let selectedDriver = "Lewis Hamilton";
+    let selectedDriver = retData[0].driver_name;
     let selectedAttribute = "points";
     let driverChart = new DriverChart(retData, selectedDriver, selectedAttribute);
     const driverObj = new Drivers(retData, driverChart, selectedDriver, selectedAttribute);
 
-
-
     d3.select('#YearFrom').on('change', function () {
         let retVal = updateYear(data);
         driverObj.populateNames(retVal);
+        driverObj.update(retVal[0].driver_name);
+        driverChart.playerDropdown(retVal, selectedAttribute);
+        driverChart.update([retVal[0].driver_name], selectedAttribute);
     });
 
     d3.select('#YearTo').on('change', function () {
         let retVal = updateYear(data);
         driverObj.populateNames(retVal);
+        driverObj.update(retVal[0].driver_name);
+        driverChart.playerDropdown(retVal, selectedAttribute);
+        driverChart.update([retVal[0].driver_name], selectedAttribute);
     });
 
 });
