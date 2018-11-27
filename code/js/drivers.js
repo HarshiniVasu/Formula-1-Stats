@@ -19,7 +19,8 @@ class Drivers {
 
         let drivers = [];
         driverData.forEach(function(d){
-            drivers.push(d.driver_name);
+            if (drivers.length < 60) // Fix
+                drivers.push(d.driver_name);
         });
 
         let that = this;
@@ -33,7 +34,7 @@ class Drivers {
             that.showNames();
             that.update(d);
             that.driverChart.update([d], "points");
-        })
+        });
 
         li.transition()
             .duration(1000)
@@ -71,7 +72,7 @@ class Drivers {
 
         let teamString = "";
         for (let i=0; i < teamNames.length; i++) {
-            if (i == teamNames.length - 1)
+            if (i === teamNames.length - 1)
                 teamString += teamNames[i];
             else
                 teamString += teamNames[i]+", ";
@@ -108,7 +109,7 @@ class Drivers {
             .attr("y", function(d, i){
                 return (i+1)*50;
             })
-            //.attr("class", function(d){return "driver-text";})
+            .attr("class", function(d){return "driver-text";})
             .attr("transform", "translate("+20+","+20+")");
     };
-};
+}
