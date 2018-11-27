@@ -49,7 +49,7 @@ class Map {
             .attr("d", path);
 
         async function circuits() {
-            let data = await d3.csv("rawData/circuits.csv");
+            let data = await d3.csv("data/circuits.csv");
             //console.log(data);
 
             svg.selectAll("circle").remove();
@@ -83,7 +83,7 @@ class Map {
 
         async function topCircuit() {
             let data = await d3.csv("data/consolidated_f1_stats.csv");
-            let cirData = await d3.csv("rawData/circuits.csv");
+            let cirData = await d3.csv("data/circuits.csv");
             var countObj = {};
 
             var constructorNestedData = d3.nest()
