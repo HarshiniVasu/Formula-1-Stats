@@ -26,7 +26,7 @@ d3.json('data/world.json').then(world => {
 
 async function loadData() {
 
-    let data = await d3.csv('data/final_f1_stats.csv');
+    let data = await d3.csv('data/driver_data.csv');
 
     let reducedData = data.map(d =>{
         return {
