@@ -86,6 +86,7 @@ class Map {
             let cirData = await d3.csv("data/circuits.csv");
             var countObj = {};
 
+            //To find the team with most number of wins in each circuit
             var constructorNestedData = d3.nest()
                                           .key(function(d){ return d['circuitName']; })
                                           .key(function(d){ return d['name_x']; })
@@ -96,35 +97,38 @@ class Map {
                                           }) 
                                           .entries(data);
             //console.log(Object.keys(constructorNestedData).length);
+
+            //To find the team with most number of wins in each circuit
             let aggregateData = {};
             Object.keys(constructorNestedData).forEach(function(d){
                 let key = constructorNestedData[d].key;
                 let dd = constructorNestedData[d].values;
-                //console.log(key);
                 let tempVal=[];
                 tempVal = d3.max(dd, function(e){ return [parseInt(e.value),e.key]; });
-                //console.log(tempVal); 
                 aggregateData[key] =  tempVal;                      
 
             });
-            console.log(aggregateData);
 
-            data.forEach(function(d){
-                var circuitName = d.circuitName;
-                if(countObj[circuitName]== undefined)
-                {
-                    countObj[circuitName] = 0;
-                }
-                else{
-                    countObj[circuitName] = countObj[circuitName] + 1;
-                }
+            //Count the number of races in each circuit
+            var numRacesNestData = d3.nest()
+                                          .key(function(d){ return d['circuitName']; })
+                                          .key(function(d){ return d['season']; })
+                                          .rollup(function(d){  
+                                            return d;
+                                          }) 
+                                          .entries(data);
 
-            });
-            console.log(Object.keys(countObj).length);
+            //console.log("Race New Values");
+            //console.log(numRacesNestData);
+
+            Object.keys(numRacesNestData).forEach(function(d){
+                countObj[numRacesNestData[d].key] = numRacesNestData[d].values.length;
+            });       
+            //console.log(countObj);                     
 
             var reducedData = cirData.map(function(d,i){
                 //console.log(aggregateData[d.name]);
-                 console.log(d.name)
+               //  console.log(d.name)
                 return {
 
                     CircuitName: d.name,
@@ -140,12 +144,12 @@ class Map {
             //console.log(reducedData);
 
 
-    
+            //top 15 circuits in the world
             topData = reducedData.sort(function(a,b){
                 return d3.descending(a.races,b.races);
             }).slice(0,15);
 
-            console.log(topData);
+            //console.log(topData);
 
 
            svg.selectAll("circle").remove();
@@ -174,7 +178,6 @@ class Map {
                         });
 
             });
-
 
             circles.on("mouseout", function(d) {
                 circles.select("title").remove();
@@ -212,11 +215,7 @@ class Map {
 
            
         };
-       // async function teams() {
-              
-            //console.log(Object.keys(aggregateData).length);
-
-        //};
+    
 
         
 
