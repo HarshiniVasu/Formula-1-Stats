@@ -1,11 +1,13 @@
 class Teams {
     constructor (data) {
     	 this.margin = {top:30, right:20, bottom:30, left:50};
+    	//this.margin = {top:0, bottom:0, left: auto, right:auto};
+
         let barChart = d3.select("#bar-chart").attr('class', 'chart');
 
         this.svgBounds = barChart.node().getBoundingClientRect();
-        this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right+200;
-        this.svgHeight = 2000;
+        this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
+        this.svgHeight = 1500;
 
         //add the svg to the div
         this.svg = barChart.append("svg")
@@ -48,8 +50,11 @@ class Teams {
    				let dd = constructorNestedData[d].values;
    				let aggregateRaces = d3.sum(dd, function(dd1){  return dd1.value.races; });
    				let aggregateWins = d3.sum(dd, function(dd1){ return dd1.value.wins; });
+   				//if (aggregateWins>1){
    				aggregateData.push({"Team":constructorNestedData[d].key, "totalRaces":aggregateRaces, "totalWins": aggregateWins});
-      			});
+   				//}
+      			
+      		});
 
    			return aggregateData;
    			
@@ -99,19 +104,22 @@ class Teams {
          console.log("svg width:");
          console.log(this.svgWidth);
 
+         let that=this;
 
+         var rectHeight = 20;
         var labelArea = 200;
         var chart,
             width = this.svgWidth/3,
            // widthLeft=500,
            // widthRight=500,
             bar_height = 10,
-            height = bar_height * 200;
+            height = bar_height * 150;
 
         var rightOffset = width - this.margin.left+200;
 
         var lCol = "totalRaces";
         var rCol = "totalWins";
+
         var xFrom = d3.scaleLinear()
                     .range([0,  width]);
         var xTo = d3.scaleLinear()
@@ -182,7 +190,7 @@ class Teams {
                 })
                     .attr("y", yPosByIndex)
                     .attr("class", "left")
-                    .attr("height", y.bandwidth())
+                    .attr("height", rectHeight)
                     .style("opacity",1);
 
        	//bar chart text
@@ -207,7 +215,7 @@ class Teams {
 					return width - xFrom(d[lCol])-40;
 					})
 			        .attr("y", function (d) {
-			            return y(d.Team) + y.bandwidth() / 2;
+			            return y(d.Team) + rectHeight / 2;
 			        })
 			        .attr("dx", "20")
 			        .attr("dy", ".36em")
@@ -236,7 +244,7 @@ class Teams {
     			.duration(1000)
     			.attr("x", (labelArea / 2) + width)
                 .attr("y", function (d) {
-                    return y(d.Team) + y.bandwidth() / 2;
+                    return y(d.Team) + rectHeight / 2;
                 })
                 .attr("dy", ".20em")
                 .attr("text-anchor", "middle")
@@ -268,7 +276,7 @@ class Teams {
                 .attr("width", function (d) {
                     return xTo(d[rCol]);
                 })
-                .attr("height", y.bandwidth());
+                .attr("height", rectHeight);
 
 
     //bar chart right text
@@ -290,7 +298,7 @@ class Teams {
                     return xTo(d[rCol]) + rightOffset+40;
                 })
                 .attr("y", function (d) {
-                    return y(d.Team) + y.bandwidth() / 2;
+                    return y(d.Team) + rectHeight / 2;
                 })
                 .attr("dx", -5)
                 .attr("dy", ".36em")
@@ -304,6 +312,19 @@ class Teams {
         this.svg.append("text").attr("x",width+labelArea/3).attr("y", 15).attr("class","title").text("Teams");    
         // barChart.call(xFrom);
         // barChart.call(xTo);
+
+
+
+        //mouse click
+               barChartRight.on("click", function(d){
+                                d3.select(".selected").classed("selected",false)
+                                d3.select(this).classed("selected", true)
+                                console.log(d.Team);
+                               // console.log(result);
+                        
+                                //clear_brush.call(brush_year.move, null);
+
+                            });
 
     }
 
