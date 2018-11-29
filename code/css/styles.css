@@ -144,6 +144,10 @@
     /*background-color: #10da8f4d;*/
 }
 
+#driver_attributes{
+    margin-left: 10px;
+}
+
 #driver-names li{
     width: 20%;
     cursor: pointer;
