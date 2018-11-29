@@ -19,8 +19,8 @@ class Drivers {
 
         let drivers = [];
         driverData.forEach(function(d){
-            //if (drivers.length < 60) // Fix
-            drivers.push(d.driver_name);
+            if (drivers.length < 60) // Fix
+                drivers.push(d.driver_name);
         });
 
         let that = this;
