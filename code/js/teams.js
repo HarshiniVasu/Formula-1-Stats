@@ -7,13 +7,18 @@ class Teams {
 
         this.svgBounds = barChart.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 1500;
+        this.svgHeight = 1000;
 
         //add the svg to the div
         this.svg = barChart.append("svg")
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);//.append("g").attr('transform',
-                        //'translate(50,0)');  
+                        //'translate(50,0)');
+
+        this.div = d3.select("body") 
+    				.append("div")  // declare the tooltip div 
+    				.attr("class", "tooltip")
+    				.style("opacity", 0);  
         this.drawYearBar(data);
             
     };
@@ -56,50 +61,15 @@ class Teams {
       			
       		});
 
-   			return aggregateData;
+   			return [filteredYearData, aggregateData];
    			
-            // for(var i=startYear; i<=endYear;i++){
-            //     //console.log("year"+i);
-            //     d3.csv('data/yearData/'+i+'.csv').then(year_data => {
-            //      //d3.csv('data/yearData/'+i+'.csv', function(year_data, error) {
-            //         // var rebels = pilots.filter(function (pilot) {
-            //         // return pilot.faction === "Rebels";
-            //         // });
-            //         //console.log("Hello read years");
-            //         var constructor_key = d3.nest()
-            //                                 .key(function(d){ return d['name_x']; })
-            //                                 //.rollup(function(leaves){ return leaves.length; })
-            //                                 .entries(year_data);
-            //         //console.log(constructor_key);
-            //         // new_constructor = constructor_key.map(function(dd){ return {"team":dd.key, "participation":dd.values}; })
-            //         //participation aggregation
-            //         for(var k=0;k<constructor_key.length;k++){
-            //             //console.log(constructor_key[k].key);
-            //             if (constructor_name.hasOwnProperty(constructor_key[k].key)){
-            //                 //console.log(constructor_key[k].values.length);
-            //                 constructor_name[constructor_key[k].key]['races']+= constructor_key[k].values.length;
-            //             }
-            //         }
-            //         //wins aggregation
-            //         Object.keys(year_data).forEach(function(d) {
-            //             //console.log(year_data[d]['position']);
-
-            //             if (year_data[d]['position']=="1.0"){
-            //                 //if (constructor_name.hasOwnProperty(d['name_x'])) {
-            //                 constructor_name[year_data[d]['name_x']]['wins'] = constructor_name[year_data[d]['name_x']]['wins']+1;
-            //                // }                         
-            //             }
-            //         });
-            //         //console.log(constructor_name);
-            //     }); 
-            // }
-            //console.log(constructor_name);
     }
 
-    drawBarChart(data){
+    drawBarChart(filteredYearData, data){
          // var new_data = Object.entries(data).map(function(d){ return {"Team":d[0], "races":d[1]}; //"races":d.values};//,"races":d.key.races, "wins":d.key.wins};
          // });
          console.log("inside draw bar chart");
+         //console.log(filteredYearData);
          console.log(data);
          console.log("svg width:");
          console.log(this.svgWidth);
@@ -113,7 +83,7 @@ class Teams {
            // widthLeft=500,
            // widthRight=500,
             bar_height = 10,
-            height = bar_height * 150;
+            height = bar_height * 100;
 
         var rightOffset = width - this.margin.left+200;
 
@@ -276,7 +246,8 @@ class Teams {
                 .attr("width", function (d) {
                     return xTo(d[rCol]);
                 })
-                .attr("height", rectHeight);
+                .attr("height", rectHeight)
+                .attr("class","classBarRight");
 
 
     //bar chart right text
@@ -319,12 +290,202 @@ class Teams {
                barChartRight.on("click", function(d){
                                 d3.select(".selected").classed("selected",false)
                                 d3.select(this).classed("selected", true)
-                                console.log(d.Team);
-                               // console.log(result);
-                        
-                                //clear_brush.call(brush_year.move, null);
+                                var cumData = that.bubbleData(filteredYearData, data, d.Team);
+                                that.drawBubbleChart(cumData);
+                                //clear_b rush.call(brush_year.move, null);
 
                             });
+
+    }
+
+    bubbleData(filteredYearData, data, selectedTeam){
+    	console.log("inside bubble chart");
+    	console.log(filteredYearData);
+    	 var selectedTeamData = filteredYearData.filter(function(d){ return d.name_x == selectedTeam; })
+    	 console.log(selectedTeamData);
+    	 console.log("inside nest");
+    	var driverDetailsNest = d3.nest()
+    	 						.key(function(d){ return d.driverRef; })
+    	 						.key(function(d){ return d.season; })
+    	 						.rollup(function(d){ 
+    	 							let tempObj = new Object();
+    	 							tempObj.numRaces = d3.max(d, function(dd1){ return parseInt(dd1.round); });
+    	 							let driverNation = d[0].nationality;
+    	 							tempObj.driverFirstName = d[0].givenName;
+    	 							tempObj.driverLastName = d[0].familyName;
+    	 							tempObj.driverNationality = driverNation;
+    	 							return tempObj;
+
+    	 						})
+    	 						.entries(selectedTeamData);
+    	// console.log(driverDetailsNest);
+
+
+    	 let cumData = [];
+   			Object.keys(driverDetailsNest).forEach(function(d){
+   				//console.log(driverDetailsNest[d].key);
+   				let dd = driverDetailsNest[d].values;
+   				//console.log(dd[0]);
+   				let aggregateNumRaces = d3.sum(dd, function(dd1){  return dd1.value.numRaces; });
+   				//let aggregateWins = d3.sum(dd, function(dd1){ return dd1.value.wins; });
+   				// //if (aggregateWins>1){
+   				 cumData.push({"driverId":driverDetailsNest[d].key, "firstName":dd[0].value.driverFirstName, "lastName":dd[0].value.driverLastName, "numRaces": aggregateNumRaces,"nationality":dd[0].value.driverNationality});
+   				//}
+      			
+      		});  
+      		console.log("cumulative data bubble");
+      		console.log(cumData);  	
+      		return cumData;
+    }
+
+    drawBubbleChart(data){
+    	var numberRaces = data.map(function(d) { return d.numRaces; });
+  		var meanRaces = d3.mean(numberRaces),
+      	racesExtent = d3.extent(numberRaces),
+      	raceScaleX,
+      	raceScaleY;
+
+  		// var continents = d3.set(countries.map(function(country) { return country.ContinentCode; }));
+  		// var continentColorScale = d3.scaleOrdinal(d3.schemeCategory10)
+    //     				.domain(continents.values());
+
+  		var width = 1200,
+      		height = 800;
+  		var svgBubble,
+      		circles,
+      		circleSize = { min: 10, max: 80 };
+  		var circleRadiusScale = d3.scaleSqrt()
+    							.domain(racesExtent)
+    							.range([circleSize.min, circleSize.max]);
+    	var forces, forceSimulation;
+    	console.log("before svg");
+    	createSVG();						
+    	createCircles();
+    	createForces();
+    	createForceSimulation();
+    	addFlagDefinitions();
+    	addFillListener(); //needed
+  		//addGroupingListeners(); //needed
+    	console.log("end bubble chart");
+
+    	function createSVG(){
+    	svgBubble = d3.select("#bubble-chart")
+      				.append("svg")
+        			.attr("width", width)
+        			.attr("height", height);
+        }
+        
+
+        function createCircles(){
+
+        		var formatPopulation = d3.format(",");
+        		circles = svgBubble.selectAll(".circleTeam")
+        					.data(data);
+
+        		circles.exit()
+   			   .attr("opacity",1)
+   			   .transition()
+   			   .duration(1000)
+   			   .attr("opacity",0)
+   			   .remove();
+        	var newCircles=circles.enter()
+        					.append("circle");
+
+        	circles = newCircles.merge(circles);
+        			circles.attr("r", function(d){ return circleRadiusScale(d.numRaces); })
+      //   			.on("mouseover", function(d) {   
+      //   			div.transition()
+      //             .duration(100)    
+      //             .style("visibility", "visible")
+      //             .style("opacity", 0.9);
+      //         		this.div.html(
+      //                 "DriverName: " +d.firstName+" "d.lastName +"<br/>"+
+      //                 "Nationality: "   +d.nationality   +"<br/>"+
+      //                 "number-of-races: "    +d.numRaces
+      //             )
+      //             .style("left", (d3.event.pageX) + "px")             
+      //             .style("top", (d3.event.pageY - 28) + "px");
+      //         })
+
+      // .on("mouseout", function(){return div.style("visibility", "hidden");});
+        					.on("mouseover", function(d){ updateDriverInfo(d); })
+        					.on("mouseout", function(d){ updateDriverInfo(); });
+        	updateCircles();
+        	function updateDriverInfo(dd1) {
+		      var info = "";
+		      if (dd1) {
+		        info = [dd1.nationality, formatPopulation(dd1.numRaces)].join(": ");
+		      }
+		      console.log(info);
+		      d3.select("#info-box").html(info);
+		    }
+        }
+
+        function updateCircles(){
+        	circles.attr("fill", function(d){
+        		return "url(#" + d.nationality + ")";
+        	});
+        }
+        function createForces(){
+        	var forceStrength = 0.05;
+        	forces = {
+        		combine: createCombineForces()
+        	};
+        	function createCombineForces(){
+        		return {
+        			x: d3.forceX(width/2).strength(forceStrength),
+        			y: d3.forceY(height/2).strength(forceStrength)
+        		};
+        	}
+        }
+
+        function createForceSimulation() {
+    			forceSimulation = d3.forceSimulation()
+      			.force("x", forces.combine.x)
+      			.force("y", forces.combine.y)
+      			.force("collide", d3.forceCollide(forceCollide));
+    			forceSimulation.nodes(data)
+      			.on("tick", function() {
+        				circles
+          		.attr("cx", function(d) { return d.x; })
+          		.attr("cy", function(d) { return d.y; });
+      });
+  }
+  function forceCollide(d){
+  	return circleRadiusScale(d.numRaces)+1;
+  }
+
+  	 function addFlagDefinitions() {
+    	var defs = svgBubble.append("defs");
+    	defs.selectAll(".flag")
+      	.data(data)
+      	.enter()
+        .append("pattern")
+        .attr("id", function(d) { return d.nationality; })
+        .attr("class", "flag")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("patternContentUnits", "objectBoundingBox")
+          .append("image")
+          .attr("width", 1)
+          .attr("height", 1)
+          // xMidYMid: center the image in the circle
+          // slice: scale the image to fill the circle
+          .attr("preserveAspectRatio", "xMidYMid slice")
+          .attr("xlink:href", function(d) {
+            return "data/images/flags/" + d.nationality + ".svg";
+          });
+  }
+
+    function addFillListener() {
+    d3.selectAll(".classBarRight")
+      .on("change", function() {
+      	console.log("on change");
+   //     toggleContinentKey(!flagFill() && !populationGrouping());
+
+        updateCircles();
+      });
+  }
 
     }
 
@@ -335,12 +496,14 @@ class Teams {
     drawYearBar(data) {
 
         let that = this;
-
+        var constructor_name, filteredYearData;
         let slider = createD3RangeSlider(1970, 2018, "#slider-container");
         slider.onChange(function(newRange){
             d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
-            var constructor_name= that.readBarData(data, newRange.begin, newRange.end);
-          	that.drawBarChart(constructor_name);
+           var result = that.readBarData(data, newRange.begin, newRange.end);
+           filteredYearData = result[0];
+           constructor_name = result[1];
+          	that.drawBarChart(filteredYearData, constructor_name);
         });
 
         slider.range(1970,1980);
