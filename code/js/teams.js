@@ -4,10 +4,11 @@ class Teams {
     	//this.margin = {top:0, bottom:0, left: auto, right:auto};
 
         let barChart = d3.select("#bar-chart").attr('class', 'chart');
+        let temp = d3.select("#temp-select");
 
-        this.svgBounds = barChart.node().getBoundingClientRect();
+        this.svgBounds = temp.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 1000;
+        this.svgHeight = 2000;
 
         //add the svg to the div
         this.svg = barChart.append("svg")
@@ -27,19 +28,19 @@ class Teams {
 
     readBarData(data, startYear, endYear){
         //console.log("hello data");
-            var unique_teams = d3.set(data, function(d){ return d.name_x; });
-            var unique_names = Object.values(unique_teams);
+            let unique_teams = d3.set(data, function(d){ return d.name_x; });
+            let unique_names = Object.values(unique_teams);
   
-  			var filteredYearData = data.filter(function(d){ return d.season>=startYear && d.season<=endYear; })
+  			let filteredYearData = data.filter(function(d){ return d.season>=startYear && d.season<=endYear; })
 
 
   			console.log("year data:")
   			console.log(filteredYearData);
-            var constructor_name={};
-            for(var j=0;j<unique_names.length;j++){
+            let constructor_name={};
+            for(let j=0;j<unique_names.length;j++){
                 constructor_name[unique_names[j]] = {"races":0, "wins":0};
             }
-            var constructorNestedData = d3.nest()
+            let constructorNestedData = d3.nest()
             							  .key(function(d){ return d['name_x']; })
             							  .key(function(d){ return d['season']; })
             							  .rollup(function(d){  
@@ -76,27 +77,28 @@ class Teams {
 
          let that=this;
 
-         var rectHeight = 20;
-        var labelArea = 200;
-        var chart,
+         let rectHeight = 20;
+        let labelArea = 200;
+        let chart,
             width = this.svgWidth/3,
            // widthLeft=500,
            // widthRight=500,
             bar_height = 10,
             height = bar_height * 100;
+            console.log("left right width:"+width);
 
-        var rightOffset = width - this.margin.left+200;
+        let rightOffset = this.margin.left + width + 200;
 
-        var lCol = "totalRaces";
-        var rCol = "totalWins";
+        let lCol = "totalRaces";
+        let rCol = "totalWins";
 
-        var xFrom = d3.scaleLinear()
+        let xFrom = d3.scaleLinear()
                     .range([0,  width]);
-        var xTo = d3.scaleLinear()
+        let xTo = d3.scaleLinear()
                     .range([0, width]);
         // var y = d3.scaleOrdinal()
         //         .range([20, height]);
-        var y = d3.scaleBand()
+        let y = d3.scaleBand()
         		  .rangeRound([20, this.svgHeight])
         		  .padding(0.2);
 
@@ -123,7 +125,7 @@ class Teams {
             return d.Team;
         }));
 
-        var yPosByIndex = function(d) {
+        let yPosByIndex = function(d) {
             return y(d['Team']);
         };
         console.log("data:");
@@ -136,7 +138,7 @@ class Teams {
        barChartLeft.exit()
        			   .attr("opacity",1)
        			   .transition()
-       			   .duration(1000)
+       			   .duration(500)
        			   .attr("opacity",0)
        			   .remove();
 
@@ -151,15 +153,18 @@ class Teams {
        barChartLeft = newBarChartLeft.merge(barChartLeft);
 
        barChartLeft.transition()
-       				.duration(1000)
+       				.duration(500)
        				.attr("width", function(d) {
                     return xFrom(d[lCol]);
                 })
                     .attr("x", function(d) {
-                    return width - xFrom(d[lCol]);
+                    return width - xFrom(d[lCol])+50;
                 })
-                    .attr("y", yPosByIndex)
-                    .attr("class", "left")
+                    .attr("y", function(d, i) {
+                    	return (i+1)*30;
+                    })
+                    .style("fill","steelblue")
+                    .style("stroke","white")
                     .attr("height", rectHeight)
                     .style("opacity",1);
 
@@ -180,12 +185,12 @@ class Teams {
        barChartText = newBarChartText.merge(barChartText);
        							         
 		barChartText.transition()
-					.duration(1000)
+					.duration(500)
 		      		.attr("x", function (d) {
-					return width - xFrom(d[lCol])-40;
+					return width - xFrom(d[lCol])+20;
 					})
-			        .attr("y", function (d) {
-			            return y(d.Team) + rectHeight / 2;
+			        .attr("y", function (d, i) {
+			            return (i+1)*30+10;
 			        })
 			        .attr("dx", "20")
 			        .attr("dy", ".36em")
@@ -201,7 +206,7 @@ class Teams {
     barChartName.exit()
        			   .attr("opacity",1)
        			   .transition()
-       			   .duration(1000)
+       			   .duration(500)
        			   .attr("opacity",0)
        			   .remove();
 
@@ -211,10 +216,10 @@ class Teams {
 
 
     barChartName.transition()
-    			.duration(1000)
-    			.attr("x", (labelArea / 2) + width)
-                .attr("y", function (d) {
-                    return y(d.Team) + rectHeight / 2;
+    			.duration(500)
+    			.attr("x", (labelArea / 2) + width+50)
+                .attr("y", function (d, i) {
+                    return (i+1)*30+10;
                 })
                 .attr("dy", ".20em")
                 .attr("text-anchor", "middle")
@@ -229,7 +234,7 @@ class Teams {
     barChartRight.exit()
    			   .attr("opacity",1)
    			   .transition()
-   			   .duration(1000)
+   			   .duration(500)
    			   .attr("opacity",0)
    			   .remove();
 
@@ -239,10 +244,13 @@ class Teams {
     barChartRight = newBarChartRight.merge(barChartRight);
 
     barChartRight.transition()
-    			.duration(1000)
+    			.duration(500)
     			.attr("x", rightOffset)
-                .attr("y", yPosByIndex)
-                .attr("class", "right")
+                .attr("y", function(d, i) {
+                	return (i+1)*30;
+                })
+                .style("fill","indianred")
+                .style("stroke","white")
                 .attr("width", function (d) {
                     return xTo(d[rCol]);
                 })
@@ -257,7 +265,7 @@ class Teams {
     barChartRightText.exit()
    			   .attr("opacity",1)
    			   .transition()
-   			   .duration(1000)
+   			   .duration(500)
    			   .attr("opacity",0)
    			   .remove();
 
@@ -268,8 +276,8 @@ class Teams {
     barChartRightText.attr("x", function (d) {
                     return xTo(d[rCol]) + rightOffset+40;
                 })
-                .attr("y", function (d) {
-                    return y(d.Team) + rectHeight / 2;
+                .attr("y", function (d, i) {
+                    return (i+1)*30+10;
                 })
                 .attr("dx", -5)
                 .attr("dy", ".36em")
@@ -278,9 +286,9 @@ class Teams {
                 .text(function(d){return d[rCol];});
 
 
-        this.svg.append("text").attr("x",width/3).attr("y", 15).attr("class","title").text("Races");
-        this.svg.append("text").attr("x",width/3+rightOffset).attr("y", 15).attr("class","title").text("Wins");
-        this.svg.append("text").attr("x",width+labelArea/3).attr("y", 15).attr("class","title").text("Teams");    
+        this.svg.append("text").attr("x",width/3 + 200).attr("y", 15).attr("class","title").text("Races");
+        this.svg.append("text").attr("x",width/3+rightOffset-10).attr("y", 15).attr("class","title").text("Wins");
+        this.svg.append("text").attr("x",width+labelArea/3+60).attr("y", 15).attr("class","title").text("Teams");    
         // barChart.call(xFrom);
         // barChart.call(xTo);
 
@@ -288,9 +296,9 @@ class Teams {
 
         //mouse click
                barChartRight.on("click", function(d){
-                                d3.select(".selected").classed("selected",false)
-                                d3.select(this).classed("selected", true)
-                                var cumData = that.bubbleData(filteredYearData, data, d.Team);
+                               // d3.select(".selected").classed("selected",false)
+                                //d3.select(this).classed("selected", true)
+                                let cumData = that.bubbleData(filteredYearData, data, d.Team);
                                 that.drawBubbleChart(cumData);
                                 //clear_b rush.call(brush_year.move, null);
 
@@ -301,10 +309,10 @@ class Teams {
     bubbleData(filteredYearData, data, selectedTeam){
     	console.log("inside bubble chart");
     	console.log(filteredYearData);
-    	 var selectedTeamData = filteredYearData.filter(function(d){ return d.name_x == selectedTeam; })
+    	 let selectedTeamData = filteredYearData.filter(function(d){ return d.name_x == selectedTeam; })
     	 console.log(selectedTeamData);
     	 console.log("inside nest");
-    	var driverDetailsNest = d3.nest()
+    	let driverDetailsNest = d3.nest()
     	 						.key(function(d){ return d.driverRef; })
     	 						.key(function(d){ return d.season; })
     	 						.rollup(function(d){ 
@@ -339,8 +347,10 @@ class Teams {
     }
 
     drawBubbleChart(data){
-    	var numberRaces = data.map(function(d) { return d.numRaces; });
-  		var meanRaces = d3.mean(numberRaces),
+        d3.select("#bubble-chart").select("svg").remove();
+
+    	let numberRaces = data.map(function(d) { return d.numRaces; });
+  		let meanRaces = d3.mean(numberRaces),
       	racesExtent = d3.extent(numberRaces),
       	raceScaleX,
       	raceScaleY;
@@ -349,17 +359,21 @@ class Teams {
   		// var continentColorScale = d3.scaleOrdinal(d3.schemeCategory10)
     //     				.domain(continents.values());
 
-  		var width = 1200,
-      		height = 800;
-  		var svgBubble,
+  		let width = this.svgWidth,
+      		height = 600;
+  		let svgBubble,
       		circles,
       		circleSize = { min: 10, max: 80 };
-  		var circleRadiusScale = d3.scaleSqrt()
+  		let circleRadiusScale = d3.scaleSqrt()
     							.domain(racesExtent)
     							.range([circleSize.min, circleSize.max]);
-    	var forces, forceSimulation;
+    	let forces, forceSimulation;
     	console.log("before svg");
-    	createSVG();						
+
+
+
+    	createSVG();		
+				
     	createCircles();
     	createForces();
     	createForceSimulation();
@@ -369,6 +383,9 @@ class Teams {
     	console.log("end bubble chart");
 
     	function createSVG(){
+
+
+
     	svgBubble = d3.select("#bubble-chart")
       				.append("svg")
         			.attr("width", width)
@@ -378,9 +395,8 @@ class Teams {
 
         function createCircles(){
 
-        		var formatPopulation = d3.format(",");
-        		circles = svgBubble.selectAll(".circleTeam")
-        					.data(data);
+        		let formatPopulation = d3.format(",");
+        		circles = svgBubble.selectAll(".circleTeam").data(data);
 
         		circles.exit()
    			   .attr("opacity",1)
@@ -388,11 +404,18 @@ class Teams {
    			   .duration(1000)
    			   .attr("opacity",0)
    			   .remove();
-        	var newCircles=circles.enter()
-        					.append("circle");
+
+        	let newCircles=circles.enter().append("circle").attr('id', 'bubble');
 
         	circles = newCircles.merge(circles);
-        			circles.attr("r", function(d){ return circleRadiusScale(d.numRaces); })
+        	
+        	circles.transition()
+        			.duration(1000)
+        			.attr("r", function(d){ return circleRadiusScale(d.numRaces); })
+                    .style("opacity",1);
+
+        updateCircles();
+
       //   			.on("mouseover", function(d) {   
       //   			div.transition()
       //             .duration(100)    
@@ -408,17 +431,17 @@ class Teams {
       //         })
 
       // .on("mouseout", function(){return div.style("visibility", "hidden");});
-        					.on("mouseover", function(d){ updateDriverInfo(d); })
-        					.on("mouseout", function(d){ updateDriverInfo(); });
-        	updateCircles();
-        	function updateDriverInfo(dd1) {
-		      var info = "";
-		      if (dd1) {
-		        info = [dd1.nationality, formatPopulation(dd1.numRaces)].join(": ");
-		      }
-		      console.log(info);
-		      d3.select("#info-box").html(info);
-		    }
+      //   					.on("mouseover", function(d){ updateDriverInfo(d); })
+      //   					.on("mouseout", function(d){ updateDriverInfo(); });
+         	
+      //   	function updateDriverInfo(dd1) {
+		    //   let info = "";
+		    //   if (dd1) {
+		    //     info = [dd1.nationality, formatPopulation(dd1.numRaces)].join(": ");
+		    //   }
+		    //   console.log(info);
+		    //   d3.select("#info-box").html(info);
+		    // }
         }
 
         function updateCircles(){
@@ -427,7 +450,7 @@ class Teams {
         	});
         }
         function createForces(){
-        	var forceStrength = 0.05;
+        	let forceStrength = 0.05;
         	forces = {
         		combine: createCombineForces()
         	};
@@ -456,7 +479,7 @@ class Teams {
   }
 
   	 function addFlagDefinitions() {
-    	var defs = svgBubble.append("defs");
+    	let defs = svgBubble.append("defs");
     	defs.selectAll(".flag")
       	.data(data)
       	.enter()
@@ -496,11 +519,11 @@ class Teams {
     drawYearBar(data) {
 
         let that = this;
-        var constructor_name, filteredYearData;
+        let constructor_name, filteredYearData;
         let slider = createD3RangeSlider(1970, 2018, "#slider-container");
         slider.onChange(function(newRange){
             d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
-           var result = that.readBarData(data, newRange.begin, newRange.end);
+           let result = that.readBarData(data, newRange.begin, newRange.end);
            filteredYearData = result[0];
            constructor_name = result[1];
           	that.drawBarChart(filteredYearData, constructor_name);

@@ -181,9 +181,9 @@ h2 {
 }
 
 .chart {
-            margin: 10px;
-            padding-top: 10px;
-        }
+	margin: 10px;
+	padding-top: 10px;
+}
 
 #slider-container {
     position: relative;
@@ -193,14 +193,6 @@ h2 {
     margin-top: 0.5em;
 }
 
-.chart .right {
-            stroke: white;
-            fill: indianred;
-        }
-.chart .left {
-    stroke: white;
-    fill: steelblue;
-}
 .chart rect:hover {
     fill: #64707d;
 }
@@ -268,6 +260,20 @@ h2 {
     /*border: 1px solid #ccc;*/
     /*border-top: none;*/
 }
+
+#info-box {
+	color: #666;
+    font-size: 28px;
+    position: absolute;
+    top: 30px;
+    left: 100px;
+}
+
+.circleTeam {
+    stroke: white;
+    stroke-width: 1.5;
+}
+
 
 /*Element Styling*/
 
