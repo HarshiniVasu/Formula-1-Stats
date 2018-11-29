@@ -76,7 +76,8 @@
 
 
 .button {
-   border-radius: 20px;
+   border-radius : 20px;
+   outline:none;
     cursor: pointer;
     display: inline-block;
     text-align: center;
@@ -92,8 +93,15 @@
     margin-left: 0.5em;
     /*float: left;*/
 }
+
+#driver-select button:hover {
+    background-color: #ddd;
+    color: #000;
+}
+
 .map-select button {
    border-radius: 20px;
+   outline: none;
     cursor: pointer;
     display: inline-block;
     text-align: center;
@@ -182,8 +190,8 @@ h2 {
 }
 
 .chart {
-	margin: 10px;
-	padding-top: 10px;
+    margin: 10px;
+    padding-top: 10px;
 }
 
 #slider-container {
@@ -263,7 +271,7 @@ h2 {
 }
 
 #info-box {
-	color: #666;
+    color: #666;
     font-size: 28px;
     position: absolute;
     top: 30px;
