@@ -19,7 +19,7 @@ class Map {
 
         let geojson = topojson.feature(world, world.objects.countries);
         let path = d3.geoPath().projection(this.projection);
-        let svg = d3.select('#map-chart').append('svg');
+        let svg = d3.select('#map-chart').append('svg');//.attr("width","300").attr("height","300");
         var topData;
 
 
@@ -54,6 +54,10 @@ class Map {
 
             svg.selectAll("circle").remove();
             d3.select("#unique").remove();
+            d3.select("#uniqueText").remove();
+            d3.select("#uniqueText").remove();
+            d3.select("#uniqueImage").remove();
+            
 
             let circles = svg.selectAll("circle")
                 .data(data)
@@ -183,6 +187,10 @@ class Map {
                 circles.select("title").remove();
             });
 
+            circles.on("click",function(d){
+            	that.drawCar(d.WinningTeam,d.NumWins);
+            });
+
 
 
             var table = d3.select("#table").append("table").attr('id','unique');
@@ -224,6 +232,38 @@ class Map {
 
     };
 
+    drawCar(teamName,numberWins)
+    {
+
+        let imageUrl = "data/images/teams/"+teamName+".jpg";
+        console.log(imageUrl);
+        let imageSvg = d3.select("#map-picture");
+        imageSvg.select(".player-image").remove();
+        imageSvg.append("svg:image").attr('id','uniqueImage')
+            .attr("class", "player-image")
+            .attr("xlink:href", imageUrl)
+            .attr("x", "0")
+            .attr("y", "-40")
+            .attr("width", "500")
+            .attr("height", "400");
+
+        let driverDetails = [];
+        driverDetails.push('Team: '+teamName);
+        driverDetails.push('Number of wins: ' +numberWins);
+        let details = d3.select("#map-text").selectAll("text").data(driverDetails);
+        let newDetails = details.enter().append("text").attr('id','uniqueText');
+        details.exit().remove();
+        details = newDetails.merge(details);
+        details.text(d => d)
+            .attr("x", -19)
+            .attr("y", function(d, i){
+                return (i+1)*32;
+            })
+            .attr("font-family","sans-serif")
+            .style("font", "25px times")
+            .attr("class", function(d){return "driver-text";})
+            .attr("transform", "translate("+20+","+20+")");
+    }
      
 
 

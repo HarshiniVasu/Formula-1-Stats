@@ -273,7 +273,7 @@ h2 {
 
 circle {
     fill: #d9d9d9;
-    stroke: gray;
+    stroke: black;
     opacity: .8;
 }
 
@@ -313,7 +313,8 @@ circle {
 
 .graticule {
     fill: none;
-    stroke: #777;
+    /*stroke: #777;*/
+    stroke:#FC0303;
     stroke-width: .5px;
     stroke-opacity: .2;
     pointer-events: none;
@@ -326,6 +327,14 @@ circle {
 
 .view {
     width: 750px;
+    /*margin: auto;*/
+    padding: 5px;
+    display: inline-block;
+    float: left;
+}
+
+.mapview {
+    width: 850px;
     /*margin: auto;*/
     padding: 5px;
     display: inline-block;

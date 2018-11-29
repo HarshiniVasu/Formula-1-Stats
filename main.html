@@ -124,10 +124,14 @@
     <button class="tablinks" onclick="openTab(event, 'Circuits')">Circuits</button>
     <button class="tablinks" onclick="openTab(event, 'Demo')">Demo</button>-->
 </div>
-    <div class="innerWrapper">
-        <div id="map-chart" class="fullView"></div>
-        <div id="table"></div>
-    </div>
+        <div id="map-chart" class="mapview"></div>
+        <div id="map-template">
+            <svg width="500" height="300" id="map-picture"></svg>
+            <svg width="500" height="100" id="map-text"></svg>
+        </div>
+        <div id="table-template" class="innerWrapper">
+            <div id="table"></div>
+        </div>
 </div>
 
 <div id="Demo" class="tabcontent">
