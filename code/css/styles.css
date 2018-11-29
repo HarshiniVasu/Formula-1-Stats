@@ -133,7 +133,6 @@
     margin-top: -1%;
 }
 
-
 #driver-names{
     width: 100%;
     height: 250px;
@@ -141,7 +140,8 @@
     flex-wrap: wrap;
     padding-top: 1%;
     display: none;
-    /*background-color: #10da8f4d;*/
+    margin-left: 10px;
+    margin-bottom: 20px;
 }
 
 #driver_attributes{
