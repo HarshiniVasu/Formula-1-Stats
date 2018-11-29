@@ -275,6 +275,14 @@ h2 {
 }
 
 
+#Demo{
+    text-align: center;
+    margin-top: 50px;
+    width : 100%;
+}
+#demo-video{
+    width : 1000px;
+}
 /*Element Styling*/
 /*ID Styling*/
 
