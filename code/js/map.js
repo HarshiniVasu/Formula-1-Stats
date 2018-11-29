@@ -49,18 +49,62 @@ class Map {
             .attr("d", path);
 
         async function circuits() {
-            let data = await d3.csv("data/circuits.csv");
+            //let data = await d3.csv("data/circuits.csv");
             //console.log(data);
+            let data = await d3.csv("data/consolidated_f1_stats.csv");
+            let cirData = await d3.csv("data/circuits.csv");
+            var countObj = {};
+
+            //To find the team with most number of wins in each circuit
+            var circuitNestedData = d3.nest()
+                                          .key(function(d){ return d['circuitName']; })
+                                          .key(function(d){ return d['name_x']; })
+                                          .rollup(function(d){  
+                                          let tempObj = new Object();
+                                          tempObj = d3.max(d, function(dd){ return parseInt(dd['wins']); });
+                                          return tempObj; 
+                                          }) 
+                                          .entries(data);
+            //console.log(Object.keys(circuitNestedData).length);
+
+            //To find the team with most number of wins in each circuit
+            let circuitAggregateData = {};
+            Object.keys(circuitNestedData).forEach(function(d){
+                let key = circuitNestedData[d].key;
+                let dd = circuitNestedData[d].values;
+                let tempVal=[];
+                tempVal = d3.max(dd, function(e){ return [parseInt(e.value),e.key]; });
+                circuitAggregateData[key] =  tempVal;                      
+
+            });
+
+            var allData = cirData.map(function(d,i){
+                //console.log(aggregateData[d.name]);
+               //  console.log(d.name)
+                return {
+
+                    CircuitName: d.name,
+                    Location: d.location,
+                    CountryName: d.country,
+                    WinningTeam: circuitAggregateData[d.name][1],
+                    NumWins: circuitAggregateData[d.name][0],
+                    lat : d.lat,
+                    lng : d.lng
+                };
+            });
+
+            console.log(allData);
 
             svg.selectAll("circle").remove();
             d3.select("#unique").remove();
-            d3.select("#uniqueText").remove();
-            d3.select("#uniqueText").remove();
             d3.select("#uniqueImage").remove();
+            d3.select("#uniqueText").remove();
+            d3.select("#uniqueText").remove();
+            d3.select("#uniqueText").remove();
             
 
             let circles = svg.selectAll("circle")
-                .data(data)
+                .data(allData)
                 .enter()
                 .append("circle")
                 .attr("cx", function (d) {
@@ -75,12 +119,20 @@ class Map {
 
             circles.on("mouseover", function(d) {
                 circles.append("title").text(function(d) {
-                    let result = "Circuit Name: "+d.name+"\nLocation: "+d.location+"\nCountry: "+d.country;
-                    return result; });
+                   let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName+"\nWinning Team: "+d.WinningTeam+"\nNumber of Wins: "+d.NumWins;
+                            return result; 
+
+                        });
+
             });
+
 
             circles.on("mouseout", function(d) {
                 circles.select("title").remove();
+            });
+
+            circles.on("click",function(d){
+            	that.drawCarAllCircuit(d.WinningTeam,d.NumWins,d.CircuitName);
             });
 
         };
@@ -132,7 +184,7 @@ class Map {
 
             var reducedData = cirData.map(function(d,i){
                 //console.log(aggregateData[d.name]);
-               //  console.log(d.name)
+                
                 return {
 
                     CircuitName: d.name,
@@ -145,6 +197,8 @@ class Map {
                     lng : d.lng
                 };
             });
+            var unique_teams = d3.set(reducedData, function(d){ return d["WinningTeam"]; });
+            console.log(unique_teams);
             //console.log(reducedData);
 
 
@@ -158,6 +212,10 @@ class Map {
 
            svg.selectAll("circle").remove();
            d3.select("#unique").remove();
+           d3.select("#uniqueImageAll").remove();
+           d3.select("#uniqueTextAll").remove();
+           d3.select("#uniqueTextAll").remove();
+           d3.select("#uniqueTextAll").remove();
 
             let circles = svg.selectAll("circle")
                 .data(topData)
@@ -188,7 +246,7 @@ class Map {
             });
 
             circles.on("click",function(d){
-            	that.drawCar(d.WinningTeam,d.NumWins);
+            	that.drawCar(d.WinningTeam,d.NumWins,d.CircuitName);
             });
 
 
@@ -232,11 +290,11 @@ class Map {
 
     };
 
-    drawCar(teamName,numberWins)
+    drawCar(teamName,numberWins,circuitName)
     {
 
         let imageUrl = "data/images/teams/"+teamName+".jpg";
-        console.log(imageUrl);
+        //console.log(imageUrl);
         let imageSvg = d3.select("#map-picture");
         imageSvg.select(".player-image").remove();
         imageSvg.append("svg:image").attr('id','uniqueImage')
@@ -248,6 +306,7 @@ class Map {
             .attr("height", "400");
 
         let driverDetails = [];
+        driverDetails.push('Circuit Name: ' +circuitName);
         driverDetails.push('Team: '+teamName);
         driverDetails.push('Number of wins: ' +numberWins);
         let details = d3.select("#map-text").selectAll("text").data(driverDetails);
@@ -257,13 +316,49 @@ class Map {
         details.text(d => d)
             .attr("x", -19)
             .attr("y", function(d, i){
-                return (i+1)*32;
+                return (i+1)*22;
             })
             .attr("font-family","sans-serif")
-            .style("font", "25px times")
+            .style("font", "20px times")
             .attr("class", function(d){return "driver-text";})
             .attr("transform", "translate("+20+","+20+")");
     }
+
+
+    drawCarAllCircuit(teamName,numberWins,circuitName)
+    {
+
+        let imageUrl = "data/images/teams/"+teamName+".jpg";
+        console.log(imageUrl);
+        let imageSvg = d3.select("#map-picture");
+        imageSvg.select(".player-image").remove();
+        imageSvg.append("svg:image").attr('id','uniqueImageAll')
+            .attr("class", "player-image")
+            .attr("xlink:href", imageUrl)
+            .attr("x", "0")
+            .attr("y", "-40")
+            .attr("width", "500")
+            .attr("height", "400");
+
+        let driverDetails = [];
+        driverDetails.push('Circuit Name: ' +circuitName);
+        driverDetails.push('Team: '+teamName);
+        driverDetails.push('Number of wins: ' +numberWins);
+        let details = d3.select("#map-text").selectAll("text").data(driverDetails);
+        let newDetails = details.enter().append("text").attr('id','uniqueTextAll');
+        details.exit().remove();
+        details = newDetails.merge(details);
+        details.text(d => d)
+            .attr("x", -19)
+            .attr("y", function(d, i){
+                return (i+1)*22;
+            })
+            .attr("font-family","sans-serif")
+            .style("font", "20px times")
+            .attr("class", function(d){return "driver-text";})
+            .attr("transform", "translate("+20+","+20+")");
+    }
+     
      
 
 
