@@ -15,11 +15,13 @@ class Teams {
             .attr("width", this.svgWidth)
             .attr("height", this.svgHeight);//.append("g").attr('transform',
                         //'translate(50,0)');
-
-        this.div = d3.select("body") 
-    				.append("div")  // declare the tooltip div 
-    				.attr("class", "tooltip")
-    				.style("opacity", 0);  
+        this.div = d3.select("body").append("div")	
+    			.attr("class", "tooltip")				
+    			.style("opacity", 0);
+        // this.div = d3.select("body") 
+    				// .append("div")  // declare the tooltip div 
+    				// .attr("class", "tooltip")
+    				// .style("opacity", 0);  
         this.drawYearBar(data);
             
     };
@@ -27,15 +29,14 @@ class Teams {
 
 
     readBarData(data, startYear, endYear){
-        //console.log("hello data");
             let unique_teams = d3.set(data, function(d){ return d.name_x; });
             let unique_names = Object.values(unique_teams);
   
   			let filteredYearData = data.filter(function(d){ return d.season>=startYear && d.season<=endYear; })
 
 
-  			console.log("year data:")
-  			console.log(filteredYearData);
+  			//console.log("year data:")
+  			//console.log(filteredYearData);
             let constructor_name={};
             for(let j=0;j<unique_names.length;j++){
                 constructor_name[unique_names[j]] = {"races":0, "wins":0};
@@ -69,11 +70,11 @@ class Teams {
     drawBarChart(filteredYearData, data){
          // var new_data = Object.entries(data).map(function(d){ return {"Team":d[0], "races":d[1]}; //"races":d.values};//,"races":d.key.races, "wins":d.key.wins};
          // });
-         console.log("inside draw bar chart");
+        // console.log("inside draw bar chart");
          //console.log(filteredYearData);
-         console.log(data);
-         console.log("svg width:");
-         console.log(this.svgWidth);
+         //console.log(data);
+         //console.log("svg width:");
+         //console.log(this.svgWidth);
 
          let that=this;
 
@@ -85,7 +86,7 @@ class Teams {
            // widthRight=500,
             bar_height = 10,
             height = bar_height * 100;
-            console.log("left right width:"+width);
+          //  console.log("left right width:"+width);
 
         let rightOffset = this.margin.left + width + 200;
 
@@ -102,7 +103,7 @@ class Teams {
         		  .rangeRound([20, this.svgHeight])
         		  .padding(0.2);
 
-       	console.log("draw bar chart");
+       	//console.log("draw bar chart");
         
         // var barChart = this.svg.select("#bar-chart")
         //         .attr('class', 'chart').append("svg")
@@ -128,8 +129,8 @@ class Teams {
         let yPosByIndex = function(d) {
             return y(d['Team']);
         };
-        console.log("data:");
-        console.log(data);
+       // console.log("data:");
+        //console.log(data);
 
        //Bar chart left
        let barChartLeft= this.svg.selectAll("rect.left")
@@ -295,7 +296,7 @@ class Teams {
 
 
         //mouse click
-               barChartRight.on("click", function(d){
+               barChartName.on("click", function(d){
                                // d3.select(".selected").classed("selected",false)
                                 //d3.select(this).classed("selected", true)
                                 let cumData = that.bubbleData(filteredYearData, data, d.Team);
@@ -307,11 +308,11 @@ class Teams {
     }
 
     bubbleData(filteredYearData, data, selectedTeam){
-    	console.log("inside bubble chart");
-    	console.log(filteredYearData);
+    	//console.log("inside bubble chart");
+    	//console.log(filteredYearData);
     	 let selectedTeamData = filteredYearData.filter(function(d){ return d.name_x == selectedTeam; })
-    	 console.log(selectedTeamData);
-    	 console.log("inside nest");
+    	 //console.log(selectedTeamData);
+    	 //console.log("inside nest");
     	let driverDetailsNest = d3.nest()
     	 						.key(function(d){ return d.driverRef; })
     	 						.key(function(d){ return d.season; })
@@ -341,14 +342,15 @@ class Teams {
    				//}
       			
       		});  
-      		console.log("cumulative data bubble");
-      		console.log(cumData);  	
+      		//console.log("cumulative data bubble");
+      		//console.log(cumData);  	
       		return cumData;
     }
 
     drawBubbleChart(data){
-        d3.select("#bubble-chart").select("svg").remove();
 
+        d3.select("#bubble-chart").select("svg").remove();
+        let that=this;
     	let numberRaces = data.map(function(d) { return d.numRaces; });
   		let meanRaces = d3.mean(numberRaces),
       	racesExtent = d3.extent(numberRaces),
@@ -368,7 +370,7 @@ class Teams {
     							.domain(racesExtent)
     							.range([circleSize.min, circleSize.max]);
     	let forces, forceSimulation;
-    	console.log("before svg");
+    	//console.log("before svg");
 
 
 
@@ -380,7 +382,7 @@ class Teams {
     	addFlagDefinitions();
     	addFillListener(); //needed
   		//addGroupingListeners(); //needed
-    	console.log("end bubble chart");
+    	//console.log("end bubble chart");
 
     	function createSVG(){
 
@@ -394,7 +396,19 @@ class Teams {
         
 
         function createCircles(){
+        	let tip = d3.tip()
+						  .attr('class', 'd3-tip')
+						  .offset([-10, 0])
+						  .html(function(d) {
+						    return "<strong>Driver Name: </strong> <span style='color:red'>" + d.firstName+" "+ d.lastName + "</span>"
+						    		+ "<br/>" + "<br/>" +
+						    	   "<strong>Nationality: </strong> <span style='color:red'>" + d.nationality + "</span>" 
+						    	   + "<br/>" + "<br/>" +
+						    	   "<strong>Number of races: </strong> <span style='color:red'>" + d.numRaces + "</span>";
+						   
+  				})
 
+            svgBubble.call(tip);
         		let formatPopulation = d3.format(",");
         		circles = svgBubble.selectAll(".circleTeam").data(data);
 
@@ -413,35 +427,10 @@ class Teams {
         			.duration(1000)
         			.attr("r", function(d){ return circleRadiusScale(d.numRaces); })
                     .style("opacity",1);
+                    updateCircles();
+             circles.on("mouseover",tip.show);
+            circles.on("mouseout",tip.hide);
 
-        updateCircles();
-
-      //   			.on("mouseover", function(d) {   
-      //   			div.transition()
-      //             .duration(100)    
-      //             .style("visibility", "visible")
-      //             .style("opacity", 0.9);
-      //         		this.div.html(
-      //                 "DriverName: " +d.firstName+" "d.lastName +"<br/>"+
-      //                 "Nationality: "   +d.nationality   +"<br/>"+
-      //                 "number-of-races: "    +d.numRaces
-      //             )
-      //             .style("left", (d3.event.pageX) + "px")             
-      //             .style("top", (d3.event.pageY - 28) + "px");
-      //         })
-
-      // .on("mouseout", function(){return div.style("visibility", "hidden");});
-      //   					.on("mouseover", function(d){ updateDriverInfo(d); })
-      //   					.on("mouseout", function(d){ updateDriverInfo(); });
-         	
-      //   	function updateDriverInfo(dd1) {
-		    //   let info = "";
-		    //   if (dd1) {
-		    //     info = [dd1.nationality, formatPopulation(dd1.numRaces)].join(": ");
-		    //   }
-		    //   console.log(info);
-		    //   d3.select("#info-box").html(info);
-		    // }
         }
 
         function updateCircles(){
@@ -496,6 +485,7 @@ class Teams {
           // slice: scale the image to fill the circle
           .attr("preserveAspectRatio", "xMidYMid slice")
           .attr("xlink:href", function(d) {
+          	//console.log("data/images/flags/" + d.nationality + ".svg");
             return "data/images/flags/" + d.nationality + ".svg";
           });
   }
@@ -503,7 +493,7 @@ class Teams {
     function addFillListener() {
     d3.selectAll(".classBarRight")
       .on("change", function() {
-      	console.log("on change");
+      //	console.log("on change");
    //     toggleContinentKey(!flagFill() && !populationGrouping());
 
         updateCircles();
@@ -522,6 +512,7 @@ class Teams {
         let constructor_name, filteredYearData;
         let slider = createD3RangeSlider(1970, 2018, "#slider-container");
         slider.onChange(function(newRange){
+        	d3.select("#bubble-chart").select("svg").remove();
             d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
            let result = that.readBarData(data, newRange.begin, newRange.end);
            filteredYearData = result[0];

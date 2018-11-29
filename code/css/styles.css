@@ -133,6 +133,7 @@
     margin-top: -1%;
 }
 
+
 #driver-names{
     width: 100%;
     height: 250px;
@@ -140,12 +141,8 @@
     flex-wrap: wrap;
     padding-top: 1%;
     display: none;
-    margin-left: 10px;
-    margin-bottom: 20px;
-}
-
-#driver_attributes{
-    margin-left: 10px;
+    margin-left:10px;
+    margin-bottom:20px;
 }
 
 #driver-names li{
@@ -210,14 +207,21 @@ h2 {
     fill: #64707d;
 }
 .chart text {
-    fill: #24da82;
+    font-weight:bold;
+    fill: black;
+    /*font-size:20px;*/
 }
 .chart text.name {
-    fill: black;
+    font-weight:900;
+    font-size:15px;
+    fill: #009900;
 }
 .chart text.title {
-    fill: #2216ff;
-}
+    font-weight:bold;
+    fill:black;
+    font-size:20px;
+/*    fill: #2216ff;
+*/}
 
 #range-label {
     text-align: center;
