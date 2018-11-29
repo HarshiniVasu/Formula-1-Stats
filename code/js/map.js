@@ -10,6 +10,7 @@ class Map {
 
     }
 
+
     /**
      * Renders the map
      * @param world the topojson data with the shape of all countries and a string for the activeYear
@@ -95,12 +96,37 @@ class Map {
 
             console.log(allData);
 
+
+            var tip = d3.tip()
+						  .attr('class', 'd3-tip')
+						  .offset([-10, 0])
+						  .html(function(d) {
+						    return "<strong>Circuit Name: </strong> <span style='color:red'>" + d.CircuitName + "</span>"
+						    		+ "<br/>" + "<br/>" +
+						    	   "<strong>Location: </strong> <span style='color:red'>" + d.Location + "</span>" 
+						    	   + "<br/>" + "<br/>" +
+						    	   "<strong>Country: </strong> <span style='color:red'>" + d.CountryName + "</span>"
+						    	   + "<br/>" + "<br/>" +
+						    	   "<strong>Winning Team: </strong> <span style='color:red'>" + d.WinningTeam + "</span>"
+						    	    + "<br/>" +"<br/>" +
+						    	   "<strong>Number of Wins: </strong> <span style='color:red'>" + d.NumWins + "</span>";
+
+
+
+
+						   
+  				})
+
+            svg.call(tip);
+
             svg.selectAll("circle").remove();
             d3.select("#unique").remove();
             d3.select("#uniqueImage").remove();
             d3.select("#uniqueText").remove();
             d3.select("#uniqueText").remove();
             d3.select("#uniqueText").remove();
+
+
             
 
             let circles = svg.selectAll("circle")
@@ -111,25 +137,30 @@ class Map {
                     return that.projection([d.lng, d.lat])[0];
                 })
                 .attr("cy", function (d) {
+
                     return that.projection([d.lng, d.lat])[1];
                 })
                 .attr("r", 5)
                 .style("fill", "red")
+                .style("stroke","black")
                 .style("opacity", 0.8);
 
-            circles.on("mouseover", function(d) {
+            /*circles.on("mouseover", function(d) {
                 circles.append("title").text(function(d) {
                    let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName+"\nWinning Team: "+d.WinningTeam+"\nNumber of Wins: "+d.NumWins;
                             return result; 
 
                         });
 
-            });
+            });*/
+            circles.on("mouseover",tip.show);
 
 
-            circles.on("mouseout", function(d) {
+            /*circles.on("mouseout", function(d) {
                 circles.select("title").remove();
-            });
+            });*/
+
+            circles.on("mouseout",tip.hide);
 
             circles.on("click",function(d){
             	that.drawCarAllCircuit(d.WinningTeam,d.NumWins,d.CircuitName);
@@ -209,6 +240,28 @@ class Map {
 
             //console.log(topData);
 
+            var tip = d3.tip()
+						  .attr('class', 'd3-tip')
+						  .offset([-10, 0])
+						  .html(function(d) {
+						    return "<strong>Circuit Name: </strong> <span style='color:red'>" + d.CircuitName + "</span>"
+						    		+ "<br/>" + "<br/>" +
+						    	   "<strong>Location: </strong> <span style='color:red'>" + d.Location + "</span>" 
+						    	   + "<br/>" + "<br/>" +
+						    	   "<strong>Country: </strong> <span style='color:red'>" + d.CountryName + "</span>"
+						    	   + "<br/>" + "<br/>" +
+						    	   "<strong>Winning Team: </strong> <span style='color:red'>" + d.WinningTeam + "</span>"
+						    	    + "<br/>" +"<br/>" +
+						    	   "<strong>Number of Wins: </strong> <span style='color:red'>" + d.NumWins + "</span>";
+
+
+
+
+						   
+  				})
+
+            svg.call(tip);
+
 
            svg.selectAll("circle").remove();
            d3.select("#unique").remove();
@@ -229,9 +282,10 @@ class Map {
                 })
                 .attr("r", 5)
                 .style("fill", "red")
+                .style("stroke","black")
                 .style("opacity", 0.8);
 
-            circles.on("mouseover", function(d) {
+           /* circles.on("mouseover", function(d) {
                 circles .append("title")
                         .text(function(d) {
                             let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName+"\nWinning Team: "+d.WinningTeam+"\nNumber of Wins: "+d.NumWins;
@@ -243,7 +297,15 @@ class Map {
 
             circles.on("mouseout", function(d) {
                 circles.select("title").remove();
-            });
+            });*/
+
+            circles.on("mouseover",tip.show);
+
+
+            circles.on("mouseout",tip.hide);
+
+
+
 
             circles.on("click",function(d){
             	that.drawCar(d.WinningTeam,d.NumWins,d.CircuitName);
