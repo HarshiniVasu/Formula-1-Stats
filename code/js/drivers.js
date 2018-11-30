@@ -69,13 +69,19 @@ class Drivers {
         });
 
         let teamNames = Object.values(teamSet);
+        let tempNames = [];
+        for (let i=0; i < teamNames.length; i++) {
+            tempNames.push(teamNames[i]);
+            if (i === 2)
+                break;
+        }
 
         let teamString = "";
-        for (let i=0; i < teamNames.length; i++) {
-            if (i === teamNames.length - 1)
-                teamString += teamNames[i];
+        for (let i=0; i < tempNames.length; i++) {
+            if (i === tempNames.length - 1)
+                teamString += tempNames[i];
             else
-                teamString += teamNames[i]+", ";
+                teamString += tempNames[i] + ", ";
         }
 
         let start = singleDriverData.values[0].key;
@@ -107,7 +113,7 @@ class Drivers {
         details.text(d => d)
             .attr("x", 50)
             .attr("y", function(d, i){
-                return (i+1)*40;
+                return (i+1)*40+40;
             })
             .attr("class", function(d, i){
                 if (i === 0) {
