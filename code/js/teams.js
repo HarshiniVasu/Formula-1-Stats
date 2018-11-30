@@ -46,19 +46,21 @@ class Teams {
                             .key(function(d){ return d['season']; })
                             .rollup(function(d){  
                             let tempObj = new Object();
+                            //console.log(d);
                             tempObj.races = d3.max(d, function(dd1){ return parseInt(dd1.round); });
                             tempObj.wins = d3.max(d, function(dd){ return parseInt(dd.wins); });
+                            tempObj.nationality = d[0]['nationality.1'];
                             return tempObj; 
                             }) 
                             .entries(filteredYearData);
-            //console.log(constructorNestedData);
+           // console.log(constructorNestedData);
             let aggregateData = [];
         Object.keys(constructorNestedData).forEach(function(d){
           let dd = constructorNestedData[d].values;
           let aggregateRaces = d3.sum(dd, function(dd1){  return dd1.value.races; });
           let aggregateWins = d3.sum(dd, function(dd1){ return dd1.value.wins; });
           //if (aggregateWins>1){
-          aggregateData.push({"Team":constructorNestedData[d].key, "totalRaces":aggregateRaces, "totalWins": aggregateWins});
+          aggregateData.push({"Team":constructorNestedData[d].key, "totalRaces":aggregateRaces, "totalWins": aggregateWins,"teamNationality":constructorNestedData[d].values[0].value.nationality });
           //}
             
           });
@@ -75,7 +77,14 @@ class Teams {
          //console.log(data);
          //console.log("svg width:");
          //console.log(this.svgWidth);
+         let tipBar = d3.tip()
+              .attr('class', 'd3-tip')
+              .offset([-10, 0])
+              .html(function(d) {
+                return "<strong>Team Nationality: </strong> <span style='color:red'>" + d.teamNationality + "</span>"                
+          })
 
+           this.svg.call(tipBar);
          let that=this;
 
          let rectHeight = 20;
@@ -92,10 +101,13 @@ class Teams {
 
         let lCol = "totalRaces";
         let rCol = "totalWins";
-
+        let fromMaxValue = d3.max(data, function(d){ return d[lCol]; })
+        let toMaxValue = d3.max(data, function(d){ return d[rCol]; })
         let xFrom = d3.scaleLinear()
+                    .domain([0, fromMaxValue])
                     .range([0,  width]);
         let xTo = d3.scaleLinear()
+                    .domain([0, toMaxValue])
                     .range([0, width]);
         // var y = d3.scaleOrdinal()
         //         .range([20, height]);
@@ -115,12 +127,12 @@ class Teams {
             // .attr("transform","translate(50,20)");
         //let w = labelArea + width + width;
 
-        xFrom.domain(d3.extent(data, function(d) {
-            return d[lCol];
-        }));
-        xTo.domain(d3.extent(data, function(d) {
-            return d[rCol];
-        }));
+        // xFrom.domain(d3.extent(data, function(d) {
+        //     return d[lCol];
+        // }));
+        // xTo.domain(d3.extent(data, function(d) {
+        //     return d[rCol];
+        // }));
 
         y.domain(data.map(function(d) {
             return d.Team;
@@ -227,6 +239,10 @@ class Teams {
                 .attr('class', 'name')
                 .text(function(d){return d['Team'];})
                 .attr("opacity",1);
+
+    barChartName.on("mouseover",tipBar.show);
+            barChartName.on("mouseout",tipBar.hide);
+
 
     //bar chart right
     let barChartRight = this.svg.selectAll("rect.right")
@@ -362,7 +378,7 @@ class Teams {
     //            .domain(continents.values());
 
       let width = this.svgWidth,
-          height = 600;
+          height = 750;
       let svgBubble,
           circles,
           circleSize = { min: 10, max: 80 };
@@ -402,13 +418,15 @@ class Teams {
               .html(function(d) {
                 return "<strong>Driver Name: </strong> <span style='color:red'>" + d.firstName+" "+ d.lastName + "</span>"
                     + "<br/>" + "<br/>" +
-                     "<strong>Nationality: </strong> <span style='color:red'>" + d.nationality + "</span>" 
+                     "<strong>Driver's Nationality: </strong> <span style='color:red'>" + d.nationality + "</span>" 
                      + "<br/>" + "<br/>" +
                      "<strong>Number of races: </strong> <span style='color:red'>" + d.numRaces + "</span>";
                
           })
 
             svgBubble.call(tip);
+
+            let textData = ["Hover over the flags to view driver details","Scroll down to the bar chart"];
             let formatPopulation = d3.format(",");
             circles = svgBubble.selectAll(".circleTeam").data(data);
 
@@ -422,15 +440,31 @@ class Teams {
           let newCircles=circles.enter().append("circle").attr('id', 'bubble');
 
           circles = newCircles.merge(circles);
-          
           circles.transition()
               .duration(1000)
               .attr("r", function(d){ return circleRadiusScale(d.numRaces); })
-                    .style("opacity",1);
+                    .style("opacity",1)
+                    .style("stroke","#e0e0eb");
                     updateCircles();
              circles.on("mouseover",tip.show);
             circles.on("mouseout",tip.hide);
 
+
+            let displayText = svgBubble.selectAll("text").data(textData);
+            displayText.exit()
+                    .attr("opacity",1)
+                   .transition()
+                   .duration(1000)
+                   .attr("opacity",0)
+                   .remove();
+
+            let newDisplayText = displayText.enter().append("text");
+          displayText = newDisplayText.merge(displayText);
+              displayText.attr("x", 40)
+                          .attr("y", function(d,i){ return (i+1)*50; })
+                          .text(function(d){ return d; })
+                          .style("font-weight","bold")
+                          .style("font-size","20px");
         }
 
         function updateCircles(){
@@ -522,7 +556,8 @@ class Teams {
         let slider = createD3RangeSlider(1970, 2018, "#slider-container");
         slider.onChange(function(newRange){
           d3.select("#bubble-chart").select("svg").remove();
-            d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
+            d3.select("#range-label").text(newRange.begin + " - " + newRange.end)
+              .style("font-weight","bold").style("font-size","25px");
            let result = that.readBarData(data, newRange.begin, newRange.end);
            filteredYearData = result[0];
            constructor_name = result[1];
