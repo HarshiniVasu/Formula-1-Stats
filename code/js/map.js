@@ -368,7 +368,7 @@ class Map {
 
         let driverDetails = [];
         driverDetails.push('Circuit Name: ' +circuitName);
-        driverDetails.push('Team: '+teamName);
+        driverDetails.push('Winning Team: '+teamName);
         driverDetails.push('Number of wins: ' +numberWins);
         let details = d3.select("#map-text").selectAll("text").data(driverDetails);
         let newDetails = details.enter().append("text").attr('id','uniqueText');
@@ -404,7 +404,7 @@ class Map {
 
         let driverDetails = [];
         driverDetails.push('Circuit Name:  ' +circuitName);
-        driverDetails.push('Team:  '+teamName);
+        driverDetails.push('Winning Team:  '+teamName);
         driverDetails.push('Number of wins:  ' +numberWins);
         let details = d3.select("#map-text").selectAll("text").data(driverDetails);
         let newDetails = details.enter().append("text").attr('id','uniqueTextAll');
