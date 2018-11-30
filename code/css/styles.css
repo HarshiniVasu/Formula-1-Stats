@@ -2,6 +2,11 @@
     font-family: 'Roboto', sans-serif;
 }
 
+.driver-border {
+    border: 1px solid grey;
+    padding: 20px;
+}
+
 .selected{
     stroke: #404040;;
     stroke-width:4;
@@ -135,6 +140,7 @@
 
 #driver_attributes{
     margin-left: 10px;
+    margin-right: 10px;
 }
 
 #driver-names{
