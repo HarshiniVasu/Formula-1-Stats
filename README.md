@@ -1,5 +1,4 @@
 # Formula-1-Stats
-Data Visualization Course Project
 
 Project Website: https://harshinivasu.github.io/Formula-1-Stats/
 
