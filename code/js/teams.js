@@ -326,6 +326,7 @@ class Teams {
     bubbleData(filteredYearData, data, selectedTeam){
       //console.log("inside bubble chart");
       //console.log(filteredYearData);
+      console.log("hello bubble");
        let selectedTeamData = filteredYearData.filter(function(d){ return d.name_x == selectedTeam; })
        //console.log(selectedTeamData);
        //console.log("inside nest");
@@ -511,7 +512,7 @@ class Teams {
         .data(data)
         .enter()
         .append("pattern")
-        .attr("id", function(d) {  if (d.nationality.includes(" ")){ console.log(d.nationality.split(" ")[0]); return d.nationality.split(" ")[0]; } else { console.log(d.nationality); return d.nationality; } })
+        .attr("id", function(d) {  if (d.nationality.includes(" ")){  return d.nationality.split(" ")[0]; } else {  return d.nationality; } })
         .attr("class", "flag")
         .attr("width", "100%")
         .attr("height", "100%")
@@ -525,7 +526,7 @@ class Teams {
           .attr("xlink:href", function(d) {
             //console.log("data/images/flags/" + d.nationality + ".svg");
             if (d.nationality.includes(" "))
-              { console.log(d.nationality.split(" ")[0]); 
+              { //console.log(d.nationality.split(" ")[0]); 
                   return "data/images/flags/" + d.nationality.split(" ")[0] + ".svg"; }
                 else { 
                   return "data/images/flags/" + d.nationality + ".svg"; }
