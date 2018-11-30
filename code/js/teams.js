@@ -417,6 +417,7 @@ class Teams {
    			   .transition()
    			   .duration(1000)
    			   .attr("opacity",0)
+           //.style("stroke","bgray")
    			   .remove();
 
         	let newCircles=circles.enter().append("circle").attr('id', 'bubble');
@@ -424,9 +425,9 @@ class Teams {
         	circles = newCircles.merge(circles);
         	
         	circles.transition()
-        			.duration(1000)
+        			.duration(700)
         			.attr("r", function(d){ return circleRadiusScale(d.numRaces); })
-                    .style("opacity",1);
+                    .style("opacity",1).style("stroke","gray").style("stroke-width","1.5px");
                     updateCircles();
              circles.on("mouseover",tip.show);
             circles.on("mouseout",tip.hide);

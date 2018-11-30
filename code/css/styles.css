@@ -216,6 +216,7 @@ h2 {
 }
 .chart text.name {
     font-weight:900;
+    cursor: pointer;
     font-size:15px;
     fill: #009900;
 }
