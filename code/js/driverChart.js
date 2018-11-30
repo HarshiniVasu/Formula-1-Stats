@@ -124,14 +124,16 @@ class DriverChart {
         let yAxisG = d3.select("#yAxis")
             .attr("transform", "translate("+that.margin.left+"," + that.margin.top +")");
 
-        yAxisG.transition(3000).call(yAxis);
+        yAxisG.transition(2000).call(yAxis);
 
         let xScale = d3.scaleLinear()
             .range([0, that.svgWidth - that.margin.left - that.margin.right])
             .domain([d3.min(yearValues), d3.max(yearValues)]).nice();
 
-        let xAxis = d3.axisBottom();
-        xAxis.scale(xScale);
+        let x_max = xScale.domain().slice(-1)[0];
+
+        let xAxis = d3.axisBottom().scale(xScale).tickValues(d3.range(x_max+1))
+            .tickFormat(d3.format(",.0f"));
 
         let xAxisG = d3.select("#xAxis")
             .attr("transform", "translate("+(that.margin.left+ 10)+"," + (that.svgHeight - that.margin.bottom) +")");
@@ -140,7 +142,8 @@ class DriverChart {
             .domain([0, playerYearDataList.length])
             .range(["#2019F6", "#F61936"]);
 
-        xAxisG.transition(3000).call(xAxis);
+        xAxisG.transition(2000).call(xAxis);
+
         that.svg.selectAll(".playerPath").remove();
         that.svg.selectAll(".playerNode").remove();
         let playerIndex = 0;
