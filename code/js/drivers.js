@@ -105,11 +105,16 @@ class Drivers {
         details.exit().remove();
         details = newDetails.merge(details);
         details.text(d => d)
-            .attr("x", 100)
+            .attr("x", 50)
             .attr("y", function(d, i){
-                return (i+1)*50;
+                return (i+1)*40;
             })
-            .attr("class", function(d){return "driver-text";})
-            .attr("transform", "translate("+20+","+20+")");
+            .attr("class", function(d, i){
+                if (i === 0) {
+                    return "unique-name";
+                } else {
+                    return "driver-text";
+                }
+            });
     };
 }

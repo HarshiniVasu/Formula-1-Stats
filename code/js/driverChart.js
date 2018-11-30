@@ -3,7 +3,8 @@ class DriverChart {
     constructor (driverData, selectedDriver, selectedAttribute) {
 
         // Initializes the svg elements required for this chart
-        this.margin = {top: 30, right: 20, bottom: 20, left: 50};
+        this.margin = {top: 10, right: 30, bottom: 30, left: 50};
+        d3.select("#performance_years").classed("fullView", true);
         let divyearChart = d3.select("#temp-select");
 
         //fetch the svg bounds
@@ -114,8 +115,8 @@ class DriverChart {
         });
 
         let yScale = d3.scaleLinear()
-            .domain([d3.min(attribValues, d => d), d3.max(attribValues, d => d)])
-            .range([that.svgHeight - that.margin.top - that.margin.bottom, 0]);
+            .range([that.svgHeight - that.margin.top - that.margin.bottom, 0])
+            .domain([d3.min(attribValues, d => d), d3.max(attribValues, d => d)]).nice();
 
         let yAxis = d3.axisLeft();
         yAxis.scale(yScale);
@@ -126,8 +127,8 @@ class DriverChart {
         yAxisG.transition(3000).call(yAxis);
 
         let xScale = d3.scaleLinear()
-            .domain([d3.min(yearValues), d3.max(yearValues)])
-            .range([0, that.svgWidth - that.margin.left - that.margin.right]);
+            .range([0, that.svgWidth - that.margin.left - that.margin.right])
+            .domain([d3.min(yearValues), d3.max(yearValues)]).nice();
 
         let xAxis = d3.axisBottom();
         xAxis.scale(xScale);

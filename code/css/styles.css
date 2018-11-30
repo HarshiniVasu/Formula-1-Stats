@@ -163,6 +163,13 @@
     font-size: 15px;
 }
 
+.unique-name {
+    font-family: Lato;
+    font-size: 25px;
+    font-weight:bold;
+    fill: black;
+}
+
 #selected-drivers{
     display: inline-block;
     float: right;
