@@ -71,15 +71,19 @@ body{
 
 #dropdown {
     text-align: center;
-    font-size: 17px;
+    font-size: 19px;
     margin-top: 30px;
+    font-weight:bold;
+    fill: black;
 }
 
 #playerdropdown {
     text-align: center;
-    font-size: 17px;
+    font-size: 19px;
     margin-top: 30px;
     margin-bottom: 30px;
+    font-weight:bold;
+    fill: black;
 }
 
 
@@ -133,7 +137,8 @@ body{
 
 #driver-details{
     /*background-color: #10da8f1a;*/
-    width: 100%;
+
+    text-align: center;
 }
 #driver-select{
     /*background-color: #c7e9c0d6;*/
