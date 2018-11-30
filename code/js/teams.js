@@ -511,7 +511,7 @@ class Teams {
 
         let that = this;
         let constructor_name, filteredYearData;
-        let slider = createD3RangeSlider(1970, 2018, "#slider-container");
+        let slider = createD3RangeSlider(1970, 2025, "#slider-container");
         slider.onChange(function(newRange){
         	d3.select("#bubble-chart").select("svg").remove();
             d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
