@@ -36,12 +36,6 @@ class Map {
             .classed('countries', true)
             .attr('id', d =>  d.id);
 
-        /*svg.append("path")
-            .datum({type: "Sphere"})
-            .attr("id", "sphere")
-            .attr("d", path)
-            .attr('fill', 'none')
-            .attr('stroke', 'black');*/
 
         let graticule = d3.geoGraticule();
         svg.append("path")
@@ -50,8 +44,6 @@ class Map {
             .attr("d", path);
 
         async function circuits() {
-            //let data = await d3.csv("data/circuits.csv");
-            //console.log(data);
             let data = await d3.csv("data/consolidated_f1_stats.csv");
             let cirData = await d3.csv("data/circuits.csv");
             var countObj = {};
@@ -66,7 +58,6 @@ class Map {
                                           return tempObj; 
                                           }) 
                                           .entries(data);
-            //console.log(Object.keys(circuitNestedData).length);
 
             //To find the team with most number of wins in each circuit
             let circuitAggregateData = {};
@@ -80,8 +71,6 @@ class Map {
             });
 
             var allData = cirData.map(function(d,i){
-                //console.log(aggregateData[d.name]);
-               //  console.log(d.name)
                 return {
 
                     CircuitName: d.name,
@@ -94,7 +83,6 @@ class Map {
                 };
             });
 
-          //  console.log(allData);
 
 
             var tip = d3.tip()
@@ -107,7 +95,7 @@ class Map {
 						    	   + "<br/>" + "<br/>" +
 						    	   "<strong>Country: </strong> <span style='color:red'>" + d.CountryName + "</span>"
 						    	   + "<br/>" + "<br/>" +
-						    	   "<strong>Winning Team: </strong> <span style='color:red'>" + d.WinningTeam + "</span>"
+						    	   "<strong>Most Successful Team: </strong> <span style='color:red'>" + d.WinningTeam + "</span>"
 						    	    + "<br/>" +"<br/>" +
 						    	   "<strong>Number of Wins: </strong> <span style='color:red'>" + d.NumWins + "</span>";
 
@@ -146,20 +134,9 @@ class Map {
                 .style("opacity", 0.8)
                 .style("cursor","pointer");
 
-            /*circles.on("mouseover", function(d) {
-                circles.append("title").text(function(d) {
-                   let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName+"\nWinning Team: "+d.WinningTeam+"\nNumber of Wins: "+d.NumWins;
-                            return result; 
-
-                        });
-
-            });*/
             circles.on("mouseover",tip.show);
 
 
-            /*circles.on("mouseout", function(d) {
-                circles.select("title").remove();
-            });*/
 
             circles.on("mouseout",tip.hide);
 
@@ -184,7 +161,6 @@ class Map {
                                           return tempObj; 
                                           }) 
                                           .entries(data);
-            //console.log(Object.keys(constructorNestedData).length);
 
             //To find the team with most number of wins in each circuit
             let aggregateData = {};
@@ -206,16 +182,11 @@ class Map {
                                           }) 
                                           .entries(data);
 
-            //console.log("Race New Values");
-            //console.log(numRacesNestData);
-
             Object.keys(numRacesNestData).forEach(function(d){
                 countObj[numRacesNestData[d].key] = numRacesNestData[d].values.length;
-            });       
-            //console.log(countObj);                     
+            });                         
 
             var reducedData = cirData.map(function(d,i){
-                //console.log(aggregateData[d.name]);
                 
                 return {
 
@@ -230,17 +201,13 @@ class Map {
                 };
             });
             var unique_teams = d3.set(reducedData, function(d){ return d["WinningTeam"]; });
-           // console.log(unique_teams);
-            //console.log(reducedData);
-
 
             //top 15 circuits in the world
             topData = reducedData.sort(function(a,b){
                 return d3.descending(a.races,b.races);
             }).slice(0,15);
 
-            //console.log(topData);
-
+          
             var tip = d3.tip()
 						  .attr('class', 'd3-tip')
 						  .offset([-10, 0])
@@ -251,7 +218,7 @@ class Map {
 						    	   + "<br/>" + "<br/>" +
 						    	   "<strong>Country: </strong> <span style='color:red'>" + d.CountryName + "</span>"
 						    	   + "<br/>" + "<br/>" +
-						    	   "<strong>Winning Team: </strong> <span style='color:red'>" + d.WinningTeam + "</span>"
+						    	   "<strong>Most Successful Team: </strong> <span style='color:red'>" + d.WinningTeam + "</span>"
 						    	    + "<br/>" +"<br/>" +
 						    	   "<strong>Number of Wins: </strong> <span style='color:red'>" + d.NumWins + "</span>";
 
@@ -287,19 +254,6 @@ class Map {
                 .style("opacity", 0.8)
                 .style("cursor","pointer");
 
-           /* circles.on("mouseover", function(d) {
-                circles .append("title")
-                        .text(function(d) {
-                            let result = "Circuit Name: "+d.CircuitName+"\nLocation: "+d.Location+"\nCountry: "+d.CountryName+"\nWinning Team: "+d.WinningTeam+"\nNumber of Wins: "+d.NumWins;
-                            return result; 
-
-                        });
-
-            });
-
-            circles.on("mouseout", function(d) {
-                circles.select("title").remove();
-            });*/
 
             circles.on("mouseover",tip.show);
 
@@ -357,7 +311,6 @@ class Map {
     {
 
         let imageUrl = "data/images/teams/"+teamName+".jpg";
-        //console.log(imageUrl);
         let imageSvg = d3.select("#map-picture");
         imageSvg.select(".player-image").remove();
         imageSvg.append("svg:image").attr('id','uniqueImage')
@@ -370,7 +323,7 @@ class Map {
 
         let driverDetails = [];
         driverDetails.push('Circuit Name: ' +circuitName);
-        driverDetails.push('Winning Team: '+teamName);
+        driverDetails.push('Most Successful Team: '+teamName);
         driverDetails.push('Number of wins: ' +numberWins);
         let details = d3.select("#map-text").selectAll("text").data(driverDetails);
         let newDetails = details.enter().append("text").attr('id','uniqueText');
@@ -381,7 +334,6 @@ class Map {
             .attr("y", function(d, i){
                 return (i+1)*21.5;
             })
-            //.attr("font-family","sans-serif")
             .style("font-size", "17px")
             .style("font-weight","bolder")
             .attr("class", function(d){return "driver-text";})
@@ -393,7 +345,6 @@ class Map {
     {
 
         let imageUrl = "data/images/teams/"+teamName+".jpg";
-       // console.log(imageUrl);
         let imageSvg = d3.select("#map-picture");
         imageSvg.select(".player-image").remove();
         imageSvg.append("svg:image").attr('id','uniqueImageAll')
@@ -406,7 +357,7 @@ class Map {
 
         let driverDetails = [];
         driverDetails.push('Circuit Name:  ' +circuitName);
-        driverDetails.push('Winning Team:  '+teamName);
+        driverDetails.push('Most Successful Team:  '+teamName);
         driverDetails.push('Number of wins:  ' +numberWins);
         let details = d3.select("#map-text").selectAll("text").data(driverDetails);
         let newDetails = details.enter().append("text").attr('id','uniqueTextAll');
@@ -417,37 +368,11 @@ class Map {
             .attr("y", function(d, i){
                 return (i+1)*21.5;
             })
-            //.attr("font-family","sans-serif")
             .style("font-size", "17px")
             .style("font-weight","bolder")
             .attr("class", function(d){return "driver-text";})
             .attr("transform", "translate("+20+","+20+")");
     }
      
-     
-
-
-       
-
-
-    /**
-     * Highlights the selected conutry and region on mouse click
-     * @param activeCountry the country ID of the country to be rendered as selected/highlighted
-     */
-    updateHighlightClick(activeCountry) {
-
-        //this.clearHighlight();
-        //d3.select("#map-chart svg").select("#" + activeCountry.toUpperCase()).classed("selected-country", true);
-
-    }
-
-    /**
-     * Clears all highlights
-     */
-    clearHighlight() {
-
-       // d3.select('#map-chart svg').selectAll('.countries').classed('selected-country', false);
-
-    }
 }
 
