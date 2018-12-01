@@ -5,6 +5,18 @@ body{
     font-family: 'Roboto', sans-serif;
 }
 
+.display-text {
+    font-weight:bold;
+    font-size:20px;
+    text-align:center;
+}
+
+#magicText {
+    margin-left: 375px;
+    text-align: left;
+    }
+    
+
 .driver-border {
     border: 1px solid grey;
     padding: 20px;
