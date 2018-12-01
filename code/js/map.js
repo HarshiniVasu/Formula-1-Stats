@@ -143,7 +143,8 @@ class Map {
                 .attr("r", 5)
                 .style("fill", "red")
                 .style("stroke","black")
-                .style("opacity", 0.8);
+                .style("opacity", 0.8)
+                .style("cursor","pointer");
 
             /*circles.on("mouseover", function(d) {
                 circles.append("title").text(function(d) {
@@ -283,7 +284,8 @@ class Map {
                 .attr("r", 5)
                 .style("fill", "red")
                 .style("stroke","black")
-                .style("opacity", 0.8);
+                .style("opacity", 0.8)
+                .style("cursor","pointer");
 
            /* circles.on("mouseover", function(d) {
                 circles .append("title")
