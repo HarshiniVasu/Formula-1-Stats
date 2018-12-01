@@ -367,6 +367,8 @@ class Teams {
     drawBubbleChart(data){
 
         d3.select("#bubble-chart").select("svg").remove();
+        d3.select("#hover-text").select("text").remove();
+
         let that=this;
       let numberRaces = data.map(function(d) { return d.numRaces; });
       let meanRaces = d3.mean(numberRaces),
@@ -427,7 +429,30 @@ class Teams {
 
             svgBubble.call(tip);
 
-            let textData = ["Hover over the flags to view driver details","Scroll down to the bar chart"];
+            let textData = ["Hover over the flags to view driver details, Scroll down to the bar chart"];
+            let temp = d3.select("#hover-text");
+            let displayText = temp.selectAll("text").data(textData);
+            let newDisplayText = displayText.enter().append("text").attr("id", "hover-id");
+
+            displayText.exit()
+                .attr("opacity",1)
+                .transition()
+                .duration(1000)
+                .attr("opacity",0)
+                .remove();
+
+            displayText = newDisplayText.merge(displayText);
+
+            displayText.transition()
+                .duration(1000)
+                .attr("x", 40)
+                .attr("y", function(d,i){ return (i+1)*50; })
+                .text(function(d){ return d; })
+                .style("text-align", "centre")
+                .style("font-weight","bold")
+                .style("font-size","25px");
+
+
             let formatPopulation = d3.format(",");
             circles = svgBubble.selectAll(".circleTeam").data(data);
 
@@ -450,22 +475,6 @@ class Teams {
              circles.on("mouseover",tip.show);
             circles.on("mouseout",tip.hide);
 
-
-            let displayText = svgBubble.selectAll("text").data(textData);
-            displayText.exit()
-                    .attr("opacity",1)
-                   .transition()
-                   .duration(1000)
-                   .attr("opacity",0)
-                   .remove();
-
-            let newDisplayText = displayText.enter().append("text");
-          displayText = newDisplayText.merge(displayText);
-              displayText.attr("x", 40)
-                          .attr("y", function(d,i){ return (i+1)*50; })
-                          .text(function(d){ return d; })
-                          .style("font-weight","bold")
-                          .style("font-size","20px");
         }
 
         function updateCircles(){
@@ -557,6 +566,7 @@ class Teams {
         let slider = createD3RangeSlider(1970, 2018, "#slider-container");
         slider.onChange(function(newRange){
           d3.select("#bubble-chart").select("svg").remove();
+            d3.select("#hover-text").select("text").remove();
             d3.select("#range-label").text(newRange.begin + " - " + newRange.end)
               .style("font-weight","bold").style("font-size","25px");
            let result = that.readBarData(data, newRange.begin, newRange.end);

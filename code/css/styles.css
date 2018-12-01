@@ -5,6 +5,12 @@ body{
     font-family: 'Roboto', sans-serif;
 }
 
+#hover-text {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: -10px;
+}
+
 .display-text {
     font-weight:bold;
     font-size:20px;
@@ -224,6 +230,7 @@ h1 {
 }
 h2 {
     margin-bottom:1em;
+    font-weight:bold;
 }
 
 .chart {
