@@ -66,7 +66,9 @@ function updateYear (reducedData)
 
     let distinctValue = [];
     nestData.forEach(function(d){
-        distinctValue.push({"driver_name":d.key, "values":d.values});
+        if (d.values.length >= 4) {
+            distinctValue.push({"driver_name": d.key, "values": d.values});
+        }
     });
 
     return distinctValue;
